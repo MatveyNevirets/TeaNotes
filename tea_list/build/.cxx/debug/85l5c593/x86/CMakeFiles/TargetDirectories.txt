@@ -1,0 +1,2 @@
+/home/matvey/VisualStudioCode/Projects/TeaNotes/tea_list/build/.cxx/debug/85l5c593/x86/CMakeFiles/edit_cache.dir
+/home/matvey/VisualStudioCode/Projects/TeaNotes/tea_list/build/.cxx/debug/85l5c593/x86/CMakeFiles/rebuild_cache.dir

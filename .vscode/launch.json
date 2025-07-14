@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "tea_list",
+            "cwd": "tea_list",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "tea_list (profile mode)",
+            "cwd": "tea_list",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "tea_list (release mode)",
+            "cwd": "tea_list",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "tea_server",
+            "cwd": "tea_server",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}

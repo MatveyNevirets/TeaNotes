@@ -1,0 +1,1 @@
+/home/matvey/VisualStudioCode/Projects/TeaNotes/tea_list/build/app/intermediates/cxx/debug/85l5c593/obj/x86_64
