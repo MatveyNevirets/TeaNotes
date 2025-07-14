@@ -1,7 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
-import 'dart:convert';
-
 import 'package:sqlite3/sqlite3.dart';
 
 class Tea {
@@ -48,21 +44,34 @@ class Tea {
     };
   }
 
-  factory Tea.fromRow(Row row) {
+  factory Tea.fromMap(Map<String, dynamic> map) {
     return Tea(
-      id: row['id'] as int,
-      title: row['title'] as String,
-      description: row['description'] as String,
-      imagePath: row['imagePath'] as String,
-      pricePerGram: row['pricePerGram'] as int,
-      age: row['age'] as int,
-      type: row['type'] as String,
-      brewingTemperature: row['brewingTemperature'] as String,
-      countOfSpills: row['countOfSpills'] as int,
-      gatheringYear: row['gatheringYear'] as int,
-      gatheringPlace: row['gatheringPlace'] as String,
+      title: map['title'],
+      description: map['description'],
+      imagePath: map['imagePath'] ?? '',
+      brewingTemperature: map['brewingTemperature'],
+      gatheringPlace: map['gatheringPlace'],
+      type: map['type'],
+      pricePerGram: map['pricePerGram'],
+      age: map['age'],
+      countOfSpills: map['countOfSpills'],
+      gatheringYear: map['gatheringYear'],
     );
   }
 
-  String toJson() => json.encode(toMap());
+  factory Tea.fromRow(Row row) {
+    return Tea(
+      id: row['id'] as int,
+      title: row['title']?.toString() ?? '',
+      description: row['description']?.toString() ?? '',
+      imagePath: row['imagePath']?.toString() ?? '',
+      pricePerGram: row['pricePerGram'] as int,
+      age: row['age'] as int,
+      type: row['type']?.toString() ?? '',
+      brewingTemperature: row['brewingTemperature']?.toString() ?? '',
+      countOfSpills: row['countOfSpills'] as int,
+      gatheringYear: row['gatheringYear'] as int,
+      gatheringPlace: row['gatheringPlace']?.toString() ?? '',
+    );
+  }
 }

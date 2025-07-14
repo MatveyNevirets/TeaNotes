@@ -30,15 +30,13 @@ class TeaRepository {
   }
 
   Future<List<Tea>> getTeas(String? type) async {
-    final sql = type == "null"
-        ? 'SELECT * FROM tea_table'
-        : '''
-    SELECT * FROM tea_table
-    WHERE type = ?
-    ''';
+    final bool withFilter = type != null;
+
+    final sql = withFilter ? 'SELECT * FROM tea_table WHERE type = ?' : 'SELECT * FROM tea_table';
 
     final stmt = database.prepare(sql);
-    final result = type == null ? stmt.select() : stmt.select([type]);
+
+    final result = withFilter ? stmt.select([type]) : stmt.select();
 
     final teas = result.map(Tea.fromRow).toList();
 

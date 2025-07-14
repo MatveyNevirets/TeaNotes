@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:server/data/models/tea_model.dart';
 import 'package:server/data/tea_database.dart';
 import 'package:server/data/tea_repository.dart';
 import 'package:shelf/shelf.dart';
@@ -18,16 +19,29 @@ class TeaRpc {
       () async {
         // ignore: prefer_function_declarations_over_variables
         handler(Request request) async {
+          log("Request with method ${request.method} and path ${request.requestedUri.path}");
           if (request.method == 'GET' && request.requestedUri.path == "/teas") {
-            log("Request with method ${request.method} and path ${request.requestedUri.path}");
+            final teaList = await teaRepository.getTeas(null);
 
-            final teaList = await teaRepository.getTeas("Улун");
+            final teaMap = teaList.map((tea) => tea.toMap()).toList();
 
-            final teaMap = teaList.map((tea) => tea.toMap());
+            return Response.ok(jsonEncode(teaMap), headers: {'Content-Type': 'application/json'});
+          }
 
-            log(teaMap.toString());
+          if (request.method == "POST" && request.requestedUri.path == "/teas") {
+            try {
+              final jsonBody = await request.readAsString();
 
-            return Response.ok(jsonEncode({"hi": "huh"}));
+              final body = jsonDecode(jsonBody);
+
+              final newTea = Tea.fromMap(body);
+
+              teaRepository.addTea(newTea);
+
+              return Response.ok({"Success": true});
+            } catch (e) {
+              return Response.internalServerError();
+            }
           }
 
           return Response.notFound("Path not found");
