@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:tea_list/features/intro/presentation/intro_screen.dart';
-import 'package:tea_list/features/main_page/main_page.dart';
+import 'package:tea_list/internal/routes/application_routes.dart';
 
 class TeaApplication extends StatelessWidget {
-  TeaApplication({super.key});
-
-  final _router = GoRouter(
-    initialLocation: "/",
-    routes: [
-      GoRoute(path: "/", builder: (context, state) => IntroScreen()),
-      GoRoute(path: "/main_page", builder: (context, state) => MainPage()),
-    ],
-  );
+  const TeaApplication({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(debugShowCheckedModeBanner: false, routerConfig: _router);
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
+      theme: ThemeData(
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(fontSize: 30, fontFamily: 'Coiny', fontWeight: FontWeight.w400),
+          bodyMedium: TextStyle(fontSize: 24, fontFamily: 'Coiny'),
+          bodySmall: TextStyle(fontSize: 14, fontFamily: 'Coiny'),
+        ),
+      ),
+    );
   }
 }
