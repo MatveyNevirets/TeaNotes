@@ -8,14 +8,15 @@ class TeaRepository {
 
   void addTea(Tea tea) {
     final trx = database.prepare('''
-  INSERT INTO tea_table (title, description, brewingTemperature, gatheringPlace,
+  INSERT INTO tea_table (title, description, imagePath, brewingTemperature, gatheringPlace,
   type, pricePerGram, age, countOfSpills, gatheringYear)
-  VALUES (?,?,?,?,?,?,?,?,?)
+  VALUES (?,?,?,?,?,?,?,?,?,?)
 ''');
 
     trx.execute([
       tea.title,
       tea.description,
+      tea.imagePath,
       tea.brewingTemperature,
       tea.gatheringPlace,
       tea.type,

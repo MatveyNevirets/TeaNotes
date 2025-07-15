@@ -1,13 +1,16 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:tea_list/shared/domain/models/tea_model.dart';
+import 'package:tea_list/shared/data/models/tea_model.dart';
 
 class TeaCardToAdd extends StatelessWidget {
   const TeaCardToAdd({super.key, required this.tea});
 
-  final Tea tea;
+  final TeaModel tea;
 
   @override
   Widget build(BuildContext context) {
+    log(tea.imagePath);
     return Container(
       margin: EdgeInsets.all(8),
       child: Stack(

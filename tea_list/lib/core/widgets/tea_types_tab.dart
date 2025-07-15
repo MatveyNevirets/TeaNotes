@@ -3,9 +3,9 @@ import 'package:tea_list/core/widgets/tea_type_item.dart';
 import 'package:tea_list/shared/domain/enums/tea_types_list.dart';
 
 class TeaTypesTab extends StatefulWidget {
-  TeaTypesTab({super.key, required this.onTeaTypeChanged});
+  const TeaTypesTab({super.key, required this.onTeaTypeChanged});
 
-  VoidCallback onTeaTypeChanged;
+  final Function(int index) onTeaTypeChanged;
 
   @override
   State<TeaTypesTab> createState() => _TeaTypesTabState();
@@ -24,7 +24,7 @@ class _TeaTypesTabState extends State<TeaTypesTab> {
           onTap: () {
             setState(() {
               currentIndex = index;
-              widget.onTeaTypeChanged.call();
+              widget.onTeaTypeChanged.call(currentIndex);
             });
           },
           child: TeaTypeItem(title: teaTypesList[index], currentIndex: currentIndex, index: index),

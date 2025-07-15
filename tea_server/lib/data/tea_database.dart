@@ -42,6 +42,7 @@ class TeaDatabase {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           title TEXT,
           description TEXT,
+          imagePath TEXT,
           brewingTemperature TEXT,
           gatheringPlace TEXT,
           type TEXT,

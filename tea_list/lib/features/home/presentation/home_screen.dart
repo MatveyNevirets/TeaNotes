@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tea_list/core/widgets/tea_types_tab.dart';
+import 'package:tea_list/features/home/presentation/bloc/home_bloc.dart';
 import 'package:tea_list/features/home/widgets/tea_card_to_add.dart';
-import 'package:tea_list/shared/domain/models/tea_model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -76,128 +77,39 @@ class HomeScreen extends StatelessWidget {
                     left: 10,
                     right: 10,
                     height: 50,
-                    child: TeaTypesTab(onTeaTypeChanged: () => print("changed")),
+                    child: TeaTypesTab(
+                      onTeaTypeChanged: (index) => context.read<HomeBloc>().add(FetchDataEvent(index)),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
 
-          SliverGrid.builder(
-            itemCount: teaList.length,
-            itemBuilder: (context, index) {
-              return Center(child: TeaCardToAdd(tea: teaList[index]));
+          BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) {
+              if (state is HasDataState) {
+                return SliverGrid(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    return Center(child: TeaCardToAdd(tea: state.teaList[index]));
+                  }, childCount: state.teaList.length),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.7,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                  ),
+                );
+              } else if (state is HomeInitial) {
+                context.read<HomeBloc>().add(FetchDataEvent(0));
+              } else if (state is ErrorState) {
+                return SliverToBoxAdapter(child: Text("Fucking error: ${state.error}"));
+              }
+              return SliverToBoxAdapter(child: CircularProgressIndicator());
             },
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.7,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-            ),
           ),
         ],
       ),
     );
   }
 }
-
-List<Tea> teaList = [
-  Tea(
-    title: "Золотой\nБык",
-    description: "Золотой\nБык от синь вэнь",
-    imagePath: "assets/images/tea_background.jpg",
-    pricePerGram: 12,
-    age: 2,
-    type: "Шен Пуэр",
-    brewingTemperature: 95,
-    countOfSpills: 8,
-    gatheringYear: 2023,
-    gatheringPlace: "Юньнань",
-  ),
-  Tea(
-    title: "Золотой\nБык",
-    description: "Золотой\nБык от синь вэнь",
-    imagePath: "assets/images/tea_background.jpg",
-    pricePerGram: 12,
-    age: 2,
-    type: "Шен Пуэр",
-    brewingTemperature: 95,
-    countOfSpills: 8,
-    gatheringYear: 2023,
-    gatheringPlace: "Юньнань",
-  ),
-  Tea(
-    title: "Золотой\nБык",
-    description: "Золотой\nБык от синь вэнь",
-    imagePath: "assets/images/tea_background.jpg",
-    pricePerGram: 12,
-    age: 2,
-    type: "Шен Пуэр",
-    brewingTemperature: 95,
-    countOfSpills: 8,
-    gatheringYear: 2023,
-    gatheringPlace: "Юньнань",
-  ),
-  Tea(
-    title: "Золотой\nБык",
-    description: "Золотой\nБык от синь вэнь",
-    imagePath: "assets/images/tea_background.jpg",
-    pricePerGram: 12,
-    age: 2,
-    type: "Шен Пуэр",
-    brewingTemperature: 95,
-    countOfSpills: 8,
-    gatheringYear: 2023,
-    gatheringPlace: "Юньнань",
-  ),
-
-  ///
-  Tea(
-    title: "Да Цзинь Чжень",
-    description: "Красный из юньнани",
-    imagePath: "assets/images/tea_background.jpg",
-    pricePerGram: 10,
-    age: 4,
-    type: "Красный",
-    brewingTemperature: 95,
-    countOfSpills: 6,
-    gatheringYear: 2023,
-    gatheringPlace: "Юньнань",
-  ),
-  Tea(
-    title: "Да Цзинь Чжень",
-    description: "Красный из юньнани",
-    imagePath: "assets/images/tea_background.jpg",
-    pricePerGram: 10,
-    age: 4,
-    type: "Красный",
-    brewingTemperature: 95,
-    countOfSpills: 6,
-    gatheringYear: 2023,
-    gatheringPlace: "Юньнань",
-  ),
-  Tea(
-    title: "Да Цзинь Чжень",
-    description: "Красный из юньнани",
-    imagePath: "assets/images/tea_background.jpg",
-    pricePerGram: 10,
-    age: 4,
-    type: "Красный",
-    brewingTemperature: 95,
-    countOfSpills: 6,
-    gatheringYear: 2023,
-    gatheringPlace: "Юньнань",
-  ),
-  Tea(
-    title: "Да Цзинь Чжень",
-    description: "Красный из юньнани",
-    imagePath: "assets/images/tea_background.jpg",
-    pricePerGram: 10,
-    age: 4,
-    type: "Красный",
-    brewingTemperature: 95,
-    countOfSpills: 6,
-    gatheringYear: 2023,
-    gatheringPlace: "Юньнань",
-  ),
-];
