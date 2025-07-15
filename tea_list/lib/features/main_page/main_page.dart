@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tea_list/core/styles/custom_bottom_navigation_bar.dart';
+import 'package:tea_list/core/widgets/custom_bottom_navigation_bar.dart';
 import 'package:tea_list/features/favorite/presentation/favorite_screen.dart';
 import 'package:tea_list/features/home/presentation/home_page.dart';
 import 'package:tea_list/features/notes/presentation/notes_screen.dart';

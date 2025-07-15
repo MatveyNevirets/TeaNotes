@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_gradient_container.dart';
 import 'package:tea_list/core/widgets/container_with_image.dart';
+import 'package:tea_list/core/widgets/custom_bottom_bar.dart';
+import 'package:tea_list/core/widgets/stylized_button.dart';
 import 'package:tea_list/shared/data/models/tea_model.dart';
 
 class DetailsScreen extends StatelessWidget {
@@ -11,14 +14,31 @@ class DetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: CustomBottomBar(
+        verticalPadding: 16,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [BoxShadow(color: Colors.amber, blurRadius: 1, spreadRadius: 1)],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: StylizedButton(
+              onPressed: () {},
+              text: "Начать церемонию",
+              fontSize: 16,
+              backgroundColor: AppColors.selectedItemColor,
+              buttonSize: Size(MediaQuery.of(context).size.width - 80, MediaQuery.of(context).size.width / 7),
+            ),
+          ),
+        ],
+      ),
       body: Center(
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
               expandedHeight: 320,
-              pinned: true,
               backgroundColor: Colors.transparent,
-              title: Text("Details"),
+
               flexibleSpace: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,
                 background: Stack(
@@ -66,9 +86,13 @@ class DetailsScreen extends StatelessWidget {
             SliverToBoxAdapter(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width / 15),
-                child: Text(tea.description, style: Theme.of(context).textTheme.bodySmall),
+                child: Text(
+                  "${tea.description}\n\nЦена чая за грамм\n${tea.pricePerGram} рублей\n\nРекомендуем заваривать данный чай при температуре ${tea.brewingTemperature}. В среднем он способен выдержать ${tea.countOfSpills} проливов\n\nГод сбора: ${tea.gatheringYear}\n\nМесто производства: ${tea.gatheringPlace}",
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
             ),
+            SliverToBoxAdapter(child: SizedBox(height: MediaQuery.of(context).size.height / 6)),
           ],
         ),
       ),
