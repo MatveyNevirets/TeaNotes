@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tea_list/core/widgets/base_gradient_container.dart';
+import 'package:tea_list/core/widgets/container_with_image.dart';
 import 'package:tea_list/core/widgets/tea_types_tab.dart';
 import 'package:tea_list/features/home/presentation/bloc/home_bloc.dart';
 import 'package:tea_list/features/home/widgets/tea_card_to_add.dart';
@@ -9,8 +11,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final teaTypesController = PageController(viewportFraction: 0.5);
-
     return Scaffold(
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -24,54 +24,18 @@ class HomeScreen extends StatelessWidget {
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    left: 0,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height / 3.5,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            Color.fromARGB(0, 0, 0, 0),
-                            Color.fromARGB(200, 0, 0, 0),
-                            Color.fromARGB(255, 0, 0, 0),
-                          ],
-                          stops: [0.0, 0.02, 1.0],
-                        ),
-                      ),
-                    ),
-                  ),
+                  // This is a background gradiend that fills 2/3 part of the screen.
+                  Positioned(top: 0, right: 0, left: 0, child: BaseGradientContainer()),
+
+                  // Container with image in stack
                   Positioned(
                     top: MediaQuery.of(context).size.height / 6,
                     left: MediaQuery.of(context).size.width / 10,
                     right: MediaQuery.of(context).size.width / 10,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color.fromARGB(220, 0, 0, 0),
-                            blurRadius: 1,
-                            spreadRadius: 1,
-                            offset: Offset(0, 1),
-                          ),
-                          BoxShadow(
-                            color: Color.fromARGB(220, 255, 255, 255),
-                            blurRadius: 1,
-                            spreadRadius: 1,
-                            offset: Offset(0, -1),
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.asset("assets/images/tea_background.jpg", fit: BoxFit.cover),
-                      ),
-                    ),
+                    child: ContainerWithImage(imagePath: "assets/images/tea_background.jpg"),
                   ),
+
+                  // This is a tea tabs what helps choose types of tea and then filter base tea list for the user
                   Positioned(
                     top: MediaQuery.of(context).size.height / 2.5,
                     left: 10,
@@ -89,26 +53,37 @@ class HomeScreen extends StatelessWidget {
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state is HasDataState) {
-                return SliverGrid(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    return Center(child: TeaCardToAdd(tea: state.teaList[index]));
-                  }, childCount: state.teaList.length),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.7,
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 4,
-                  ),
-                );
+                return SliverTeasGrid(state: state);
               } else if (state is HomeInitial) {
                 context.read<HomeBloc>().add(FetchDataEvent(0));
               } else if (state is ErrorState) {
-                return SliverToBoxAdapter(child: Text("Fucking error: ${state.error}"));
+                return SliverToBoxAdapter(child: Text("BLoC error in presentation layer: ${state.error}"));
               }
               return SliverToBoxAdapter(child: CircularProgressIndicator());
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Moved to clean up code
+class SliverTeasGrid extends StatelessWidget {
+  const SliverTeasGrid({super.key, required this.state});
+  final HasDataState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverGrid(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        return Center(child: TeaCardToAdd(tea: state.teaList[index]));
+      }, childCount: state.teaList.length),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.7,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
       ),
     );
   }

@@ -14,11 +14,14 @@ class AppDepends {
       final timer = Stopwatch();
       timer.start();
 
+      // Here we register DioHandler into getIt with lazySingleton
       getIt.registerLazySingleton(() => DioHandler());
 
       timer.stop();
+      // Reports about successful registration of depend
       onProccess.call(Depends.values[0].name, timer.elapsedMilliseconds);
     } on Object catch (error, stack) {
+      // Reports about failure
       onError.call(Depends.values[0].name, error, stack);
     }
   }

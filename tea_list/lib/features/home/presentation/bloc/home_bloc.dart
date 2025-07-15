@@ -19,17 +19,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(LoadingState());
 
     try {
+      // We create filter string that will be have type of the tea.
+      // When index is 0 we'll be show the users all teas we're having.
+      // The type is selected from index of our teaTypesList where all the tea types are recorded
       final String? teaFilter = event.teaTypeIndex != 0 ? teaTypesList[event.teaTypeIndex] : null;
 
+      // Here we fetch result from repository on domain layer
+      // We called fetchTeaList method and give teaFilter
+      // When method was completed this one return 
+      // Two variations - success with teaList or failure
       final result = await teaListRepository.fetchTeaList(teaFilter);
 
+      // Here we choose state which we'll show to the user
       result.fold(
         (failure) {
-          emit(ErrorState("Ошибка получения данных с сервера"));
+          emit(ErrorState("Error in fetch data from server"));
         },
         (teaList) {
-          log("In BLOC we have teaList: $teaList and type is ${teaList.runtimeType.toString()}");
-          log("tea image path: ${teaList[0].imagePath}");
           emit(HasDataState(teaList));
         },
       );

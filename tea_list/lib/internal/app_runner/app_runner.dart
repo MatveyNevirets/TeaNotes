@@ -11,21 +11,17 @@ class AppRunner {
       () async {
         _initializeApp();
 
+        // Here we initializing all dependencies of this application
         final depends = AppDepends();
         await depends.initDepends(
-          onProccess:
-              (name, time) => log(
-                "Depend $name has been successful initialized in ${time}ms",
-              ),
-          onError:
-              (name, error, stack) =>
-                  throw Exception(
-                    "Error in depend $name Error: $error StackTreace: $stack",
-                  ),
+          onProccess: (name, time) => log("Depend $name has been successful initialized in ${time}ms"),
+          onError: (name, error, stack) => throw Exception("Error in depend $name Error: $error StackTreace: $stack"),
         );
 
+        // Here we runs our application
         runApp(TeaApplication());
 
+        // Here we unfreeze first frame and activates our application
         WidgetsBinding.instance.addPostFrameCallback((_) {
           WidgetsBinding.instance.allowFirstFrame();
         });

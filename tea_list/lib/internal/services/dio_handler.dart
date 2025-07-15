@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 
 class DioHandler {
   final Dio dio;
+  // Here we create DioHandler constructor
+  // This constructor will be moved to depends of this application
   DioHandler()
     : dio = Dio(
         BaseOptions(
@@ -12,6 +14,6 @@ class DioHandler {
           receiveTimeout: Duration(milliseconds: 3000),
         ),
       ) {
-    log("Dio handler build");
+    log("Dio handler built");
   }
 }
