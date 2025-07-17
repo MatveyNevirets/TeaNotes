@@ -1,1 +1,0 @@
- /home/matvey/VisualStudioCode/Projects/TeaNotes/tea_list/.dart_tool/flutter_build/0c3623589232a2c41b57538ae8552180/native_assets.json: 

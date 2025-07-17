@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/features/home/data/repository/datasource.dart';
 import 'package:tea_list/features/home/domain/repository/tea_list_repository.dart';
-import 'package:tea_list/shared/data/models/tea_model.dart';
+import 'package:tea_list/core/models/tea_model.dart';
 
 class TeaListRepositoryImpl implements TeaListRepository {
   final DataSource dataSource;

@@ -4,7 +4,7 @@ import 'package:tea_list/core/widgets/base_gradient_container.dart';
 import 'package:tea_list/core/widgets/container_with_image.dart';
 import 'package:tea_list/core/widgets/custom_bottom_bar.dart';
 import 'package:tea_list/core/widgets/stylized_button.dart';
-import 'package:tea_list/shared/data/models/tea_model.dart';
+import 'package:tea_list/core/models/tea_model.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key, required this.tea});

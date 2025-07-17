@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tea_list/shared/data/models/tea_model.dart';
+import 'package:tea_list/core/models/tea_model.dart';
 
 class TeaCardToAdd extends StatelessWidget {
   const TeaCardToAdd({super.key, required this.tea});

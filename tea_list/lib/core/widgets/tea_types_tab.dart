@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tea_list/core/widgets/tea_type_item.dart';
-import 'package:tea_list/shared/domain/enums/tea_types_list.dart';
+import 'package:tea_list/core/consts/tea_types_list.dart';
 
 class TeaTypesTab extends StatefulWidget {
   const TeaTypesTab({super.key, required this.onTeaTypeChanged});

@@ -2,17 +2,23 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:tea_list/internal/app_runner/app_env.dart';
 import 'package:tea_list/internal/application/tea_application.dart';
 import 'package:tea_list/internal/di/app_depends.dart';
 
 class AppRunner {
+  // App enviroments for application dependencies
+  // This is our "switch" between server and without server logic
+  final AppEnv appEnv;
+  AppRunner(this.appEnv);
+
   void run() async {
     runZonedGuarded(
       () async {
         _initializeApp();
 
         // Here we initializing all dependencies of this application
-        final depends = AppDepends();
+        final depends = AppDepends(appEnv);
         await depends.initDepends(
           onProccess: (name, time) => log("Depend $name has been successful initialized in ${time}ms"),
           onError: (name, error, stack) => throw Exception("Error in depend $name Error: $error StackTreace: $stack"),

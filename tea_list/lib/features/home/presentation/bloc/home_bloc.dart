@@ -1,9 +1,8 @@
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:tea_list/features/home/domain/repository/tea_list_repository.dart';
-import 'package:tea_list/shared/data/models/tea_model.dart';
-import 'package:tea_list/shared/domain/enums/tea_types_list.dart';
+import 'package:tea_list/core/models/tea_model.dart';
+import 'package:tea_list/core/consts/tea_types_list.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';

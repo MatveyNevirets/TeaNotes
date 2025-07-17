@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:tea_list/core/errors/errors.dart';
-import 'package:tea_list/shared/data/models/tea_model.dart';
+import 'package:tea_list/core/models/tea_model.dart';
 
 // DataSource interface which will can help with
 // Different datasources like remote or local.
