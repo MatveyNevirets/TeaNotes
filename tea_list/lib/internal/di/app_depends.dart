@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
-import 'package:tea_list/features/home/data/datasources/remote_source.dart';
+import 'package:tea_list/features/home/data/datasources/local_data_source.dart';
+import 'package:tea_list/features/home/data/datasources/remote_data_source.dart';
 import 'package:tea_list/features/home/data/repository/datasource.dart';
 import 'package:tea_list/internal/app_runner/app_env.dart';
 import 'package:tea_list/internal/services/dio_handler.dart';
@@ -10,12 +11,10 @@ typedef OnProccess = Function(String name, int time);
 typedef OnError = Function(String name, Object? error, StackTrace? stack);
 
 class AppDepends {
-
   // We get this from AppRunner for use in switch between server and without server
   // Application logic
   final AppEnv appEnv;
   AppDepends(this.appEnv);
-  
 
   Future<void> initDepends({required OnProccess onProccess, required OnError onError}) async {
     final getIt = GetIt.I;
@@ -42,11 +41,11 @@ class AppDepends {
       getIt.registerLazySingleton(() {
         late final DataSource dataSource;
 
-      dataSource = switch (appEnv) {
-        AppEnv.serverProd => RemoteDataSource(),
-        AppEnv.withoutServerProd => RemoteDataSource(), //TODO: MUST CHANGE LATER
-      };
-        
+        dataSource = switch (appEnv) {
+          AppEnv.serverProd => RemoteDataSource(),
+          AppEnv.withoutServerProd => LocalDataSource(),
+        };
+
         return dataSource;
       });
 

@@ -21,7 +21,7 @@ class AppRunner {
         final depends = AppDepends(appEnv);
         await depends.initDepends(
           onProccess: (name, time) => log("Depend $name has been successful initialized in ${time}ms"),
-          onError: (name, error, stack) => throw Exception("Error in depend $name Error: $error StackTreace: $stack"),
+          onError: (name, error, stack) => throw Exception("Error in depend $name Error: $error StackTrace: $stack"),
         );
 
         // Here we runs our application

@@ -1,8 +1,7 @@
-
 import 'package:bloc/bloc.dart';
-import 'package:tea_list/features/home/domain/repository/tea_list_repository.dart';
-import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/core/consts/tea_types_list.dart';
+import 'package:tea_list/core/models/tea_model.dart';
+import 'package:tea_list/features/home/domain/repository/tea_list_repository.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -25,14 +24,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       // Here we fetch result from repository on domain layer
       // We called fetchTeaList method and give teaFilter
-      // When method was completed this one return 
+      // When method was completed this one return
       // Two variations - success with teaList or failure
       final result = await teaListRepository.fetchTeaList(teaFilter);
 
       // Here we choose state which we'll show to the user
       result.fold(
         (failure) {
-          emit(ErrorState("Error in fetch data from server"));
+          emit(ErrorState("Error in fetch data from server. Error: ${failure.error} StackTrace: ${failure.stack}"));
         },
         (teaList) {
           emit(HasDataState(teaList));
