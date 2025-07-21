@@ -8,4 +8,6 @@ import 'package:tea_list/core/models/tea_model.dart';
 abstract class DataSource {
   Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type);
   Future<Either<Failure, String>> insertTea(TeaModel tea);
+
+  Future<void> initDataSource();
 }

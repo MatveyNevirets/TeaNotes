@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_gradient_container.dart';
 import 'package:tea_list/core/widgets/container_with_image.dart';
 import 'package:tea_list/core/widgets/tea_types_tab.dart';
+import 'package:tea_list/features/create_new_tea/presentation/create_new_tea_screen.dart';
 import 'package:tea_list/features/home/presentation/bloc/home_bloc.dart';
 import 'package:tea_list/features/home/widgets/tea_card_to_add.dart';
 
@@ -11,12 +13,37 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void addNewTea() {
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog.adaptive(
+              shape: RoundedRectangleBorder(
+                side: BorderSide(width: 10, color: Colors.black),
+                borderRadius: BorderRadiusGeometry.circular(32),
+              ),
+              insetPadding: const EdgeInsets.all(16),
+              content: CreateNewTeaScreen(),
+            ),
+      );
+    }
+
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+        child: FloatingActionButton(
+          onPressed: () => addNewTea(),
+          backgroundColor: AppColors.applicationBaseColor,
+          foregroundColor: Colors.white,
+
+          child: Icon(Icons.assignment_add, size: 24),
+        ),
+      ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
-            expandedHeight: 320,
+            expandedHeight: MediaQuery.of(context).size.height / 2,
             pinned: true,
             backgroundColor: Color.fromARGB(0, 0, 0, 0),
             flexibleSpace: FlexibleSpaceBar(

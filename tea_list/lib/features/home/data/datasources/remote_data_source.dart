@@ -1,19 +1,18 @@
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/features/home/data/repository/datasource.dart';
-import 'package:tea_list/internal/services/dio_handler.dart';
 
 class RemoteDataSource implements DataSource {
   final _getIt = GetIt.I;
+  late final Dio dio;
 
   @override
   Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type) async {
-    final dio = _getIt<DioHandler>().dio;
-
     try {
       // Here we create a response which depends of our type. If we have type
       // We calls GET request with type. If we havn't any type we calls GET request with the teas
@@ -46,6 +45,12 @@ class RemoteDataSource implements DataSource {
   @override
   Future<Either<Failure, String>> insertTea(TeaModel tea) {
     // TODO: implement insertTea
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> initDataSource() {
+    // TODO: implement initDataSource
     throw UnimplementedError();
   }
 }
