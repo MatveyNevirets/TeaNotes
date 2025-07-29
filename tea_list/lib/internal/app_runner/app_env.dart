@@ -1,1 +1,1 @@
-enum AppEnv { serverProd, withoutServerProd }
+enum AppEnv { prod }

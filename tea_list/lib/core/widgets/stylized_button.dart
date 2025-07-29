@@ -30,6 +30,7 @@ class StylizedButton extends StatelessWidget {
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
         fixedSize: WidgetStatePropertyAll(buttonSize),
         backgroundColor: WidgetStatePropertyAll(backgroundColor),
+        overlayColor: WidgetStatePropertyAll(Colors.amber.withAlpha(10)),
       ),
       child: Text(text, style: TextStyle(color: textColor, fontSize: fontSize, fontFamily: 'Coiny')),
     );

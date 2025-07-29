@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +23,20 @@ class TeaCardToAdd extends StatelessWidget {
               child: Container(
                 width: MediaQuery.of(context).size.width / 2,
                 decoration: BoxDecoration(
-                  image: DecorationImage(image: AssetImage(tea.imagePath), fit: BoxFit.cover),
+                  image: DecorationImage(
+                    image:
+                        tea.imagePath.substring(0, 6) == "assets"
+                            ? AssetImage(tea.imagePath)
+                            : ResizeImage(
+                              FileImage(File(tea.imagePath)),
+                              width:
+                                  (MediaQuery.of(context).size.width /
+                                          2 *
+                                          (MediaQuery.of(context).devicePixelRatio * 2))
+                                      .round(),
+                            ),
+                    fit: BoxFit.cover,
+                  ),
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),

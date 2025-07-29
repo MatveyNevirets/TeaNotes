@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "311983748376",
+    "project_id": "teanotes-notes",
+    "storage_bucket": "teanotes-notes.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311983748376:android:df26e21d3a0c3380c59a6d",
+        "android_client_info": {
+          "package_name": "com.example.tea_list"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0etvOAr-alHhJkFxvuvzaim0ghZcpMhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

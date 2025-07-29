@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_gradient_container.dart';
 import 'package:tea_list/core/widgets/container_with_image.dart';
 import 'package:tea_list/core/widgets/tea_types_tab.dart';
+import 'package:tea_list/features/create_new_tea/presentation/bloc/create_tea_bloc.dart';
 import 'package:tea_list/features/create_new_tea/presentation/create_new_tea_screen.dart';
+import 'package:tea_list/features/home/data/repository/datasource.dart';
+import 'package:tea_list/features/home/data/repository/tea_list_repository_impl.dart';
 import 'package:tea_list/features/home/presentation/bloc/home_bloc.dart';
 import 'package:tea_list/features/home/widgets/tea_card_to_add.dart';
 
@@ -14,17 +18,23 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void addNewTea() {
+      final datasource = GetIt.I<DataSource>();
       showDialog(
         context: context,
-        builder:
-            (context) => AlertDialog.adaptive(
+        builder: (dialogContext) {
+          return BlocProvider(
+            create: (BuildContext dialogContext) => CreateTeaBloc(teaListRepository: TeaListRepositoryImpl(datasource)),
+            child: AlertDialog.adaptive(
+              backgroundColor: AppColors.applicationBackroundColor,
               shape: RoundedRectangleBorder(
                 side: BorderSide(width: 10, color: Colors.black),
                 borderRadius: BorderRadiusGeometry.circular(32),
               ),
               insetPadding: const EdgeInsets.all(16),
-              content: CreateNewTeaScreen(),
+              content: CreateNewTeaScreen(previousContext: context),
             ),
+          );
+        },
       );
     }
 
@@ -84,6 +94,7 @@ class HomeScreen extends StatelessWidget {
               } else if (state is HomeInitial) {
                 context.read<HomeBloc>().add(FetchDataEvent(0));
               } else if (state is ErrorState) {
+                context.read<HomeBloc>().add(FetchDataEvent(0));
                 return SliverToBoxAdapter(child: Text("BLoC error in presentation layer: ${state.error}"));
               }
               return SliverToBoxAdapter(child: CircularProgressIndicator());

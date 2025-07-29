@@ -1,13 +1,35 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tea_list/features/details/presentation/details_screen.dart';
-import 'package:tea_list/features/intro/presentation/intro_screen.dart';
-import 'package:tea_list/features/main_page/main_page.dart';
 import 'package:tea_list/core/models/tea_model.dart';
+import 'package:tea_list/features/auth/presentation/login/login_page.dart';
+import 'package:tea_list/features/auth/presentation/registration/registration_page.dart';
+import 'package:tea_list/features/auth/presentation/welcome/welcome_page.dart';
+import 'package:tea_list/features/details/presentation/details_screen.dart';
+import 'package:tea_list/features/main_page/main_page.dart';
+
+void goTo(BuildContext context, String path) => context.go(path);
 
 final router = GoRouter(
   initialLocation: "/",
   routes: [
-    GoRoute(path: "/", builder: (context, state) => IntroScreen()),
+    GoRoute(
+      path: "/",
+      builder: (context, state) => WelcomePage(),
+      routes: [
+        GoRoute(
+          path: "/register",
+          builder: (context, state) {
+            return RegistrationPage();
+          },
+        ),
+        GoRoute(
+          path: "/login",
+          builder: (context, state) {
+            return LoginPage();
+          },
+        ),
+      ],
+    ),
     GoRoute(
       path: "/main_page",
       builder: (context, state) => MainPage(),

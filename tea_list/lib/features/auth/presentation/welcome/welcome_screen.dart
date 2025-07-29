@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:tea_list/core/styles/app_colors.dart';
+import 'package:tea_list/core/widgets/stylized_button.dart';
+import 'package:tea_list/internal/routes/application_routes.dart';
+
+class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.applicationBackroundColor,
+      body: Padding(
+        padding: const EdgeInsets.only(left: 32, right: 32, bottom: 32, top: 64),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset("assets/images/gaiwan.png", width: MediaQuery.of(context).size.width / 3),
+            SizedBox(height: MediaQuery.of(context).size.height / 50),
+            Text("TEA NOTES", style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 40)),
+            SizedBox(height: MediaQuery.of(context).size.height / 15),
+            StylizedButton(
+              onPressed: () => goTo(context, "/login"),
+              text: "Войти",
+              backgroundColor: AppColors.application2BaseColor,
+              textColor: Colors.black.withAlpha(200),
+              buttonSize: Size(MediaQuery.of(context).size.width / 1.35, MediaQuery.of(context).size.height / 10),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height / 50),
+            StylizedButton(
+              onPressed: () => goTo(context, "/register"),
+              text: "Регистрация",
+              backgroundColor: AppColors.application3BaseColor,
+              textColor: Colors.black.withAlpha(200),
+              buttonSize: Size(MediaQuery.of(context).size.width / 1.35, MediaQuery.of(context).size.height / 10),
+            ),
+            Expanded(child: SizedBox()),
+            Image.asset("assets/images/chaban.png"),
+            SizedBox(height: MediaQuery.of(context).size.height / 100),
+            Text(
+              "Добро пожаловать на чайную церемонию!",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.black.withAlpha(150)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

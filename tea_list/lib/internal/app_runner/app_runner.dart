@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:tea_list/internal/app_runner/app_env.dart';
 import 'package:tea_list/internal/application/tea_application.dart';
 import 'package:tea_list/internal/di/app_depends.dart';
@@ -23,6 +24,9 @@ class AppRunner {
           onProccess: (name, time) => log("Depend $name has been successful initialized in ${time}ms"),
           onError: (name, error, stack) => throw Exception("Error in depend $name Error: $error StackTrace: $stack"),
         );
+
+        // Here we wait when all dependencies will be all ready
+        await GetIt.I.allReady();
 
         // Here we runs our application
         runApp(TeaApplication());

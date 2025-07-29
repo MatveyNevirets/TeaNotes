@@ -11,6 +11,7 @@ class TeaApplication extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       theme: ThemeData(
+        scaffoldBackgroundColor: AppColors.applicationBackroundColor,
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: AppColors.applicationBaseColor,
           selectionColor: Colors.transparent,

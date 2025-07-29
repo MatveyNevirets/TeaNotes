@@ -15,3 +15,21 @@ class DatabaseInsertException extends Failure {
 class DatabaseQueryException extends Failure {
   DatabaseQueryException(super.error, super.stack);
 }
+
+class EmailRegistrationException extends Failure {
+  EmailRegistrationException(super.error, super.stack);
+}
+
+class EmailLoginNotVerifedException extends Failure {
+  EmailLoginNotVerifedException(super.error, super.stack);
+
+}
+
+class EmailLoginException extends Failure {
+  EmailLoginException(super.error, super.stack);
+}
+
+class GoogleSignInException extends Failure {
+  GoogleSignInException(super.error, super.stack);
+
+}

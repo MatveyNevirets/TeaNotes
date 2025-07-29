@@ -34,7 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(ErrorState("Error in fetch data from server. Error: ${failure.error} StackTrace: ${failure.stack}"));
         },
         (teaList) {
-          emit(HasDataState(teaList));
+          emit(HasDataState(teaList.reversed.toList()));
         },
       );
     } on Object catch (error, stack) {

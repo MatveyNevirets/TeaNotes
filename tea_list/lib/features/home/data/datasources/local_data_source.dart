@@ -50,14 +50,13 @@ class LocalDataSource implements DataSource {
       final databasePath = await getDatabasesPath();
       final path = join(databasePath, 'tea_database.db');
 
-      deleteDatabase(path);
+      //  deleteDatabase(path);
 
       Database database = await openDatabase(
         path,
         version: 1,
         onCreate: (Database database, int version) async {
-          database.transaction((txn) async {
-            await txn.execute('''CREATE TABLE tea_table (
+          await database.execute('''CREATE TABLE tea_table (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
         description TEXT,
@@ -70,13 +69,12 @@ class LocalDataSource implements DataSource {
         countOfSpills INTEGER,
         gatheringYear INTEGER
         )''');
-          });
+
+          for (TeaModel tea in teaModelsList) {
+            await database.insert("tea_table", tea.toMap());
+          }
         },
       );
-
-      for (TeaModel tea in teaModelsList) {
-        await database.insert("tea_table", tea.toMap());
-      }
 
       log("Local database has been success initilized");
 

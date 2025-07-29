@@ -1,11 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
-import 'package:tea_list/features/home/data/datasources/local_data_source.dart';
+import 'package:tea_list/features/auth/data/datasources/auth_firebase.dart';
+import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
 import 'package:tea_list/features/home/data/datasources/remote_data_source.dart';
 import 'package:tea_list/features/home/data/repository/datasource.dart';
 import 'package:tea_list/internal/app_runner/app_env.dart';
-import 'package:tea_list/internal/services/dio_handler.dart';
+import 'package:tea_list/services/firebase_options.dart';
 
-enum Depends { dio, sqliteDatabase }
+enum Depends { firebase, sqliteDatabase }
 
 typedef OnProccess = Function(String name, int time);
 typedef OnError = Function(String name, Object? error, StackTrace? stack);
@@ -23,8 +25,15 @@ class AppDepends {
       final timer = Stopwatch();
       timer.start();
 
-      // Here we register DioHandler into getIt with lazySingleton
-      getIt.registerLazySingleton(() => DioHandler());
+      getIt.registerSingletonAsync<AuthRepository>(() async {
+        late final AuthRepository authRepository;
+
+        await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+        authRepository = AuthFirebaseImpl();
+
+        return authRepository;
+      });
 
       timer.stop();
       // Reports about successful registration of depend
@@ -41,10 +50,11 @@ class AppDepends {
       getIt.registerLazySingleton(() {
         late final DataSource dataSource;
 
-        dataSource = switch (appEnv) {
-          AppEnv.serverProd => RemoteDataSource(),
-          AppEnv.withoutServerProd => LocalDataSource(),
-        };
+        // dataSource = switch (appEnv) {
+        //   AppEnv.serverProd => RemoteDataSource(),
+        // };
+
+        dataSource = RemoteDataSource();
 
         return dataSource;
       });
