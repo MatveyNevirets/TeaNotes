@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/features/auth/data/models/user_model.dart';
 import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
