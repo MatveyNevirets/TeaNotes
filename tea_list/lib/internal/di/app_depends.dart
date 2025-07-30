@@ -54,9 +54,8 @@ class AppDepends {
       // Here we register application's database into getIt with lazySingleton
       getIt.registerLazySingleton(() {
         late final DataSource dataSource;
-
         // Here we fetch our datasource implementation
-        dataSource = RemoteDataSource();
+        dataSource = FirebaseRemoteDataSource();
 
         return dataSource;
       });
@@ -73,7 +72,7 @@ class AppDepends {
       timer.start();
 
       // Here we register application's database into getIt with lazySingleton
-      getIt.registerLazySingleton(() async {
+      getIt.registerSingletonAsync<GoogleSignIn>(() async {
         late final GoogleSignIn googleSignIn;
 
         // Here we fetch GoogleSignIn instance
@@ -96,7 +95,7 @@ class AppDepends {
       timer.start();
 
       // Here we register application's database into getIt with lazySingleton
-      getIt.registerLazySingleton(() async {
+      getIt.registerLazySingleton(() {
         late final FirebaseAuth firebaseAuth;
 
         // Here we fetch firebase auth instance

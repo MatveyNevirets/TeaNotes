@@ -22,7 +22,6 @@ class EmailRegistrationException extends Failure {
 
 class EmailLoginNotVerifedException extends Failure {
   EmailLoginNotVerifedException(super.error, super.stack);
-
 }
 
 class EmailLoginException extends Failure {
@@ -31,4 +30,8 @@ class EmailLoginException extends Failure {
 
 class GoogleSignInException extends Failure {
   GoogleSignInException(super.error, super.stack);
+}
+
+class UserIsNullException extends Failure {
+  UserIsNullException(super.error, super.stack);
 }

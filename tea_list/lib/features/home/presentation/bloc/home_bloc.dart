@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:tea_list/core/consts/tea_types_list.dart';
 import 'package:tea_list/core/models/tea_model.dart';
@@ -31,6 +33,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // Here we choose state which we'll show to the user
       result.fold(
         (failure) {
+          log("Error: ${failure.error} StackTrace: ${failure.stack}");
           emit(ErrorState("Error in fetch data from server. Error: ${failure.error} StackTrace: ${failure.stack}"));
         },
         (teaList) {

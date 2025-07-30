@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart' hide GoogleSignInException;
 import 'package:tea_list/core/errors/errors.dart';
+import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/features/auth/data/models/user_model.dart';
 import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
 
@@ -68,17 +69,25 @@ class AuthFirebaseImpl implements AuthRepository {
           // Wait when user will verificate email
           await waitForEmailVerification(newUser);
 
+          // Here we get all default_teas from firestore
+          final defaultTeasQuery = await FirebaseFirestore.instance.collection("default_teas").get();
+
+          // Here we create List<Map<String, dynamic>> list
+          final defaultTeas = defaultTeasQuery.docs.map((doc) => doc.data()).toList();
+
+          // Here we add to new user all defaults tea
+          user.teas = defaultTeas.map((teaMap) => TeaModel.fromMap(teaMap)).toList();
+
+          // Here we transform user to map
+          Map<String, dynamic> userMap = user.toMap();
+
           // When user verificated email
           // We insert him user id like doc title
           // And send as map him email and name
-          await FirebaseFirestore.instance.collection("users").doc(newUser.uid).set({
-            "email": user.email,
-            "name": user.name,
-          });
+          await FirebaseFirestore.instance.collection("users").doc(newUser.uid).set(userMap);
 
           // If all proccessed is OK
           // We go HomeScreen and shows snackbar
-
           return Right("Приятных чаепитий!");
         } else {
           return Right("Auth ???");
@@ -125,14 +134,28 @@ class AuthFirebaseImpl implements AuthRepository {
       final googleCredential = GoogleAuthProvider.credential(idToken: auth.idToken);
 
       // Here we insert google account into firebase authentication
-      await FirebaseAuth.instance.signInWithCredential(googleCredential);
+      // userFirebase need to fetch normal uid parameter to
+      // Fetch user's data later
+      final userFirebase = await FirebaseAuth.instance.signInWithCredential(googleCredential);
+
+      // Here we create user model to trasform that one to map
+      final user = UserModel(email: googleAccount.email, password: "google", name: googleAccount.displayName, teas: []);
+
+      // Here we get all default_teas from firestore
+      final defaultTeasQuery = await FirebaseFirestore.instance.collection("default_teas").get();
+
+      // Here we create List<Map<String, dynamic>> list
+      final defaultTeas = defaultTeasQuery.docs.map((doc) => doc.data()).toList();
+
+      // Here we add to new user all defaults tea
+      user.teas = defaultTeas.map((teaMap) => TeaModel.fromMap(teaMap)).toList();
+
+      // Here we transform user to map
+      Map<String, dynamic> userMap = user.toMap();
 
       // And then insert into firestore with doc's name like user's id
       // And another user's info like map
-      await FirebaseFirestore.instance.collection("users").doc(googleAccount.id).set({
-        "name": googleAccount.displayName,
-        "email": googleAccount.email,
-      });
+      await FirebaseFirestore.instance.collection("users").doc(userFirebase.user!.uid).set(userMap);
     } on Object catch (error, stack) {
       return Left(GoogleSignInException(error, stack));
     }
