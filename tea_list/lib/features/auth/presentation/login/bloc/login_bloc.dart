@@ -15,18 +15,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<void> _tryLogin(TryLoginEvent event, Emitter<LoginState> emit) async {
     try {
+      // Here we shows loading screen
       emit(LoginLoadingState());
 
+      // Create new user entity with our parameters
       final newUser = UserEntity(name: "name", email: event.email, password: event.password);
 
+      // From auth repository we calls loginWithEmail method
       final response = await _authRepository.loginWithEmail(newUser);
 
       response.fold(
-        (fail) {
+        (error) {
+          // If error we send snackbar message to user
           emit(LoginErrorState(message: "Проверьте логин или пароль"));
           emit(LoginInitial());
         },
         (success) {
+          // If successful login we shows HomeScreen
           emit(SuccessLoginState(message: success));
         },
       );

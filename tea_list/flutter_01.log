@@ -1,0 +1,88 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter pub get --no-example
+
+## exception
+
+_TypeError: Null check operator used on a null value
+
+```
+#0      computeTransitiveDependencies (package:flutter_tools/src/compute_dev_dependencies.dart:83:29)
+#1      findPlugins (package:flutter_tools/src/flutter_plugins.dart:113:51)
+<asynchronous suspension>
+#2      refreshPluginsList (package:flutter_tools/src/flutter_plugins.dart:1172:32)
+<asynchronous suspension>
+#3      FlutterProject.ensureReadyForPlatformSpecificTooling (package:flutter_tools/src/project.dart:379:5)
+<asynchronous suspension>
+#4      PackagesGetCommand.runCommand (package:flutter_tools/src/commands/packages.dart:383:7)
+<asynchronous suspension>
+#5      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1536:27)
+<asynchronous suspension>
+#6      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#7      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#8      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:501:9)
+<asynchronous suspension>
+#9      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#10     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:438:5)
+<asynchronous suspension>
+#11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:98:11)
+<asynchronous suspension>
+#12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#13     main (package:flutter_tools/executable.dart:113:3)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel master, 3.33.0-1.0.pre.305, on Arch Linux 6.15.2-arch1-1, locale en_US.UTF-8) [9.1s]
+    • Flutter version 3.33.0-1.0.pre.305 on channel master at /home/flutter/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision 8b22f67c85 (8 weeks ago), 2025-06-01 01:37:31 -0400
+    • Engine revision 8b22f67c85
+    • Dart version 3.9.0 (build 3.9.0-172.0.dev)
+    • DevTools version 2.46.0
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 36.0.0) [22.8s]
+    • Android SDK at /home/matvey/Android/Sdk
+    • Emulator version 34.2.16.0 (build_id 12038310) (CL:N/A)
+    • Platform android-36, build-tools 36.0.0
+    • Java binary at: /home/android-studio/jbr/bin/java
+      This is the JDK bundled with the latest Android Studio installation on this machine.
+      To manually set the JDK path, use: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment (build 17.0.11+0-17.0.11b1207.24-11852314)
+    • All Android licenses accepted.
+
+[✓] Chrome - develop for the web [559ms]
+    • Chrome at google-chrome
+
+[✓] Linux toolchain - develop for Linux desktop [10.4s]
+    • clang version 20.1.6
+    • cmake version 4.0.2-dirty
+    • ninja version 1.12.1
+    • pkg-config version 2.4.3
+    ! Unable to access driver information using 'eglinfo'.
+      It is likely available from your distribution (e.g.: apt install mesa-utils)
+
+[✓] Android Studio (version 2024.1) [546ms]
+    • Android Studio at /home/android-studio
+    • Flutter plugin version 81.0.2
+    • Dart plugin version 241.18808
+    • Java version OpenJDK Runtime Environment (build 17.0.11+0-17.0.11b1207.24-11852314)
+
+[✓] Connected device (2 available) [444ms]
+    • Linux (desktop) • linux  • linux-x64      • Arch Linux 6.15.2-arch1-1
+    • Chrome (web)    • chrome • web-javascript • Google Chrome 134.0.6998.88
+
+[✓] Network resources [694ms]
+    • All expected network resources are available.
+
+• No issues found!
+```

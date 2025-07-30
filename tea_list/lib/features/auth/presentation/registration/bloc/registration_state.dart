@@ -4,7 +4,10 @@ part of 'registration_bloc.dart';
 @immutable
 sealed class RegistrationState {}
 
-final class RegistrationInitial extends RegistrationState {}
+final class RegistrationInitial extends RegistrationState {
+  String? message;
+  RegistrationInitial({this.message});
+}
 
 class LoadingRegistration extends RegistrationState {}
 

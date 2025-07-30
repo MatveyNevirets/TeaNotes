@@ -31,5 +31,4 @@ class EmailLoginException extends Failure {
 
 class GoogleSignInException extends Failure {
   GoogleSignInException(super.error, super.stack);
-
 }

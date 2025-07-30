@@ -1,9 +1,4 @@
-import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
-import 'package:tea_list/core/errors/errors.dart';
-import 'package:tea_list/features/auth/domain/entity/user_entity.dart';
+import 'package:tea_list/features/auth/domain/repository/email_auth_repository.dart';
+import 'package:tea_list/features/auth/domain/repository/google_auth_repository.dart';
 
-abstract class AuthRepository {
-  Future<Either<Failure, String>> registerWithEmail({required UserEntity user, required VoidCallback onSend});
-  Future<Either<Failure, String>> loginWithEmail(UserEntity user);
-}
+abstract class AuthRepository implements EmailAuthRepository, GoogleAuthRepository {}

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tea_list/internal/app_runner/app_env.dart';
 import 'package:tea_list/internal/application/tea_application.dart';
@@ -17,6 +18,8 @@ class AppRunner {
     runZonedGuarded(
       () async {
         _initializeApp();
+
+        await dotenv.load(fileName: ".env");
 
         // Here we initializing all dependencies of this application
         final depends = AppDepends(appEnv);

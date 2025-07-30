@@ -10,6 +10,8 @@ class RemoteDataSource implements DataSource {
   @override
   Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type) async {
     try {
+      
+
       return Right([]);
     } on Object catch (error, stack) {
       // Here we have some errors in our try-catch block.
