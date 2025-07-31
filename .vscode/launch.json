@@ -8,7 +8,7 @@
             "name": "Flutter",
             "type": "dart",
             "request": "launch",
-            "program": "tea_list/lib/bin/tea_notes_prod.dart"
+            "program": "lib/bin/tea_notes_prod.dart"
         }
     ]
 }

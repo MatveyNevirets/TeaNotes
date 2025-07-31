@@ -10,8 +10,8 @@ class TeaListRepositoryImpl implements TeaListRepository {
 
   // Overrided method which call datasource and return TeaModel list or Failure
   @override
-  Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type) {
-    return dataSource.fetchTeaList(type);
+  Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type, {String? teaName}) {
+    return dataSource.fetchTeaList(type, teaName: teaName);
   }
 
   @override

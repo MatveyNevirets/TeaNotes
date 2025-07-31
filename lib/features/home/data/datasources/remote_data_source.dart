@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +14,7 @@ class FirebaseRemoteDataSource implements DataSource {
   final auth = GetIt.I<FirebaseAuth>();
 
   @override
-  Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type) async {
+  Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type, {String? teaName}) async {
     try {
       // Here we fetch user id
       final uid = auth.currentUser!.uid;
@@ -26,8 +28,21 @@ class FirebaseRemoteDataSource implements DataSource {
       // Here we fetch user model
       final user = UserModel.fromMap(userData);
 
+      log(type.toString());
+      log(teaName.toString());
+
       // This is filtered teas. If type is null we give all teas else teas with need type
-      final filteredTeas = type == null ? user.teas : user.teas.where((tea) => tea.type == type).toList();
+      final filteredTeas =
+          teaName ==
+                  null // If teaName is null
+              ? type ==
+                      null // We check type
+                  ? user
+                      .teas // If type is null we shows all teas
+                  // If type not null we shows teas by current type
+                  : user.teas.where((tea) => tea.type == type).toList()
+              // Else if teaName not null we search by name
+              : user.teas.where((tea) => tea.title.toLowerCase().contains(teaName.toLowerCase())).toList();
 
       // Here we returns to user's screen all teas from account
       return Right(filteredTeas);
@@ -50,5 +65,4 @@ class FirebaseRemoteDataSource implements DataSource {
 
     return Right("Успешно!");
   }
-
 }

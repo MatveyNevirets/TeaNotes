@@ -28,7 +28,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // We called fetchTeaList method and give teaFilter
       // When method was completed this one return
       // Two variations - success with teaList or failure
-      final result = await teaListRepository.fetchTeaList(teaFilter);
+      final result = await teaListRepository.fetchTeaList(teaFilter, teaName: event.searchByName);
 
       // Here we choose state which we'll show to the user
       result.fold(

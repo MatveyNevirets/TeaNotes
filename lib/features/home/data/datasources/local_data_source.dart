@@ -17,7 +17,7 @@ class LocalDataSource implements DataSource, InitDatasourceRepository {
   }
 
   @override
-  Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type) async {
+  Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type, {String? teaName}) async {
     try {
       final isFilter = type != null ? true : false;
       final teaMapList =

@@ -7,34 +7,36 @@ class StylizedTextField extends StatelessWidget {
     this.lableText,
     this.isNumberKeyboard = false,
     this.size,
+    this.textColor,
     this.fontSize,
     this.isOutline = false,
+    this.onChanged,
     required this.controller,
   });
+  final VoidCallback? onChanged;
   String? lableText;
   Size? size;
   double? fontSize;
   TextEditingController controller;
+  Color? textColor;
   bool isNumberKeyboard;
   bool isOutline;
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodySmall;
+
     return TextField(
+      onChanged: (value) => onChanged?.call(),
       controller: controller,
-      style:
-          fontSize != null
-              ? Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: fontSize)
-              : Theme.of(context).textTheme.bodySmall,
+      style: textStyle!.copyWith(color: textColor ?? textStyle.color, fontSize: fontSize ?? textStyle.fontSize),
 
       keyboardType: isNumberKeyboard ? TextInputType.number : TextInputType.text,
       decoration: InputDecoration(
         constraints: size != null ? BoxConstraints(maxHeight: size!.height, maxWidth: size!.width) : null,
         labelText: lableText,
-        labelStyle:
-            fontSize != null
-                ? Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: fontSize)
-                : Theme.of(context).textTheme.bodySmall,
+        labelStyle: textStyle.copyWith(color: textColor ?? textStyle.color, fontSize: fontSize ?? textStyle.fontSize),
+
         focusedBorder:
             isOutline
                 ? OutlineInputBorder(borderSide: BorderSide(width: 3, color: AppColors.selectedItemColor))
