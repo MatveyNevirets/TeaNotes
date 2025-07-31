@@ -12,6 +12,7 @@ class TeaApplication extends StatelessWidget {
       routerConfig: router,
       theme: ThemeData(
         scaffoldBackgroundColor: AppColors.applicationBackroundColor,
+        iconTheme: IconThemeData(color: Colors.white),
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: AppColors.applicationBaseColor,
           selectionColor: Colors.transparent,

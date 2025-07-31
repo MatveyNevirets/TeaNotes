@@ -7,10 +7,12 @@ import 'package:tea_list/features/auth/data/datasources/auth_firebase.dart';
 import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
 import 'package:tea_list/features/home/data/datasources/remote_data_source.dart';
 import 'package:tea_list/features/home/data/repository/datasource.dart';
+import 'package:tea_list/features/tea_posts/data/repository/tea_posts_repository_impl.dart';
+import 'package:tea_list/features/tea_posts/domain/repository/tea_posts_repository.dart';
 import 'package:tea_list/internal/app_runner/app_env.dart';
 import 'package:tea_list/services/firebase_options.dart';
 
-enum Depends { firebase, sqliteDatabase, googleSignIn, auth }
+enum Depends { firebase, sqliteDatabase, googleSignIn, auth, teaPosts }
 
 typedef OnProccess = Function(String name, int time);
 typedef OnError = Function(String name, Object? error, StackTrace? stack);
@@ -110,6 +112,28 @@ class AppDepends {
     } on Object catch (error, stack) {
       // Reports about failure
       onError.call(Depends.values[3].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
+
+      // Here we register application's tea posts repository
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final TeaPostsRepository teaPostsRepository;
+
+        // Here we setup repository's implementation
+        teaPostsRepository = TeaPostsRepositoryImpl();
+
+        return teaPostsRepository;
+      });
+
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[4].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[4].name, error, stack);
     }
   }
 }

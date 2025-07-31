@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -13,6 +12,7 @@ import 'package:tea_list/features/home/data/repository/datasource.dart';
 import 'package:tea_list/features/home/data/repository/tea_list_repository_impl.dart';
 import 'package:tea_list/features/home/presentation/bloc/home_bloc.dart';
 import 'package:tea_list/features/home/widgets/tea_card_to_add.dart';
+import 'package:tea_list/internal/routes/application_routes.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -103,7 +103,10 @@ class HomeScreen extends StatelessWidget {
                     top: MediaQuery.of(context).size.height / 20,
                     left: MediaQuery.of(context).size.width / 10,
                     right: MediaQuery.of(context).size.width / 10,
-                    child: ContainerWithImage(imagePath: "assets/images/tea_background.jpg"),
+                    child: GestureDetector(
+                      onTap: () => goTo(context, "/main_page/tea_posts"),
+                      child: ContainerWithImage(imagePath: "assets/images/tea_background.jpg"),
+                    ),
                   ),
 
                   // This is a tea tabs what helps choose types of tea and then filter base tea list for the user

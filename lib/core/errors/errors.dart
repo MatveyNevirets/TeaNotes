@@ -35,3 +35,7 @@ class GoogleSignInException extends Failure {
 class UserIsNullException extends Failure {
   UserIsNullException(super.error, super.stack);
 }
+
+class FetchTeaPostsException extends Failure {
+  FetchTeaPostsException(super.error, super.stack);
+}

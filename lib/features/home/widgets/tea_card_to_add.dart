@@ -14,7 +14,7 @@ class TeaCardToAdd extends StatelessWidget {
   Widget build(BuildContext context) {
     log(tea.imagePath);
     return GestureDetector(
-      onTap: () => context.go("/main_page/details", extra: tea),
+      onTap: () => context.go("/main_page/details", extra: [tea, context]),
       child: Container(
         margin: EdgeInsets.all(8),
         child: Stack(
