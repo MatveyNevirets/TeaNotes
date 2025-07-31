@@ -88,7 +88,7 @@ class HomeScreen extends StatelessWidget {
           ),
 
           SliverAppBar(
-            expandedHeight: MediaQuery.of(context).size.height / 3,
+            expandedHeight: MediaQuery.of(context).size.height / 2.5,
             pinned: false,
             backgroundColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
@@ -106,20 +106,13 @@ class HomeScreen extends StatelessWidget {
                     right: MediaQuery.of(context).size.width / 10,
                     child: GestureDetector(
                       onTap: () => goTo(context, "/main_page/tea_posts"),
-                      child: ContainerWithImage(imagePath: "assets/images/tea_background.jpg"),
+                      child: SizedBox(child: ContainerWithImage(imagePath: "assets/images/tea_background.png")),
                     ),
-                  ),
-
-                  Positioned(
-                    top: 0,
-                    left: MediaQuery.of(context).size.width / 10,
-                    right: MediaQuery.of(context).size.width / 10,
-                    child: Text("Просто о чае:\nСоветы и истории", style: Theme.of(context).textTheme.bodySmall),
                   ),
 
                   // This is a tea tabs what helps choose types of tea and then filter base tea list for the user
                   Positioned(
-                    top: MediaQuery.of(context).size.height / 3.5,
+                    top: MediaQuery.of(context).size.height / 3,
                     left: 10,
                     right: 10,
                     height: 50,
