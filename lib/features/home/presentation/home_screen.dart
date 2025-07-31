@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_gradient_container.dart';
 import 'package:tea_list/core/widgets/container_with_image.dart';
+import 'package:tea_list/core/widgets/stylized_loading_indicator.dart';
 import 'package:tea_list/core/widgets/stylized_text_field.dart';
 import 'package:tea_list/core/widgets/tea_types_tab.dart';
 import 'package:tea_list/features/create_new_tea/presentation/bloc/create_tea_bloc.dart';
@@ -109,6 +110,13 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
 
+                  Positioned(
+                    top: 0,
+                    left: MediaQuery.of(context).size.width / 10,
+                    right: MediaQuery.of(context).size.width / 10,
+                    child: Text("Просто о чае:\nСоветы и истории", style: Theme.of(context).textTheme.bodySmall),
+                  ),
+
                   // This is a tea tabs what helps choose types of tea and then filter base tea list for the user
                   Positioned(
                     top: MediaQuery.of(context).size.height / 3.5,
@@ -134,7 +142,7 @@ class HomeScreen extends StatelessWidget {
                 searchTea();
                 return SliverToBoxAdapter(child: Text("BLoC error in presentation layer: ${state.error}"));
               }
-              return SliverToBoxAdapter(child: CircularProgressIndicator());
+              return SliverToBoxAdapter(child: StylizedLoadingIndicator());
             },
           ),
         ],

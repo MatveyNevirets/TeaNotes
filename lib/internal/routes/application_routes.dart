@@ -6,6 +6,8 @@ import 'package:tea_list/features/auth/presentation/registration/registration_pa
 import 'package:tea_list/features/auth/presentation/welcome/welcome_page.dart';
 import 'package:tea_list/features/details/presentation/details_page.dart';
 import 'package:tea_list/features/main_page/main_page.dart';
+import 'package:tea_list/features/tea_post_details/presentation/tea_post_details.dart';
+import 'package:tea_list/features/tea_posts/domain/entity/tea_post_entity.dart';
 import 'package:tea_list/features/tea_posts/presentation/tea_posts_page.dart';
 
 void goTo(BuildContext context, String path) => context.go(path);
@@ -46,6 +48,15 @@ final router = GoRouter(
         ),
         GoRoute(
           path: "/tea_posts",
+          routes: [
+            GoRoute(
+              path: "/post",
+              builder: (context, state) {
+                final tea = state.extra as TeaPostEntity;
+                return TeaPostDetails(teaPostEntity: tea);
+              },
+            ),
+          ],
           builder: (context, state) {
             return TeaPostsPage();
           },

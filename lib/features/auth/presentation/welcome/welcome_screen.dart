@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_snackbar.dart';
+import 'package:tea_list/core/widgets/loading_screen.dart';
 import 'package:tea_list/core/widgets/stylized_button.dart';
 import 'package:tea_list/features/auth/presentation/welcome/bloc/welcome_bloc.dart';
 import 'package:tea_list/internal/routes/application_routes.dart';
@@ -28,7 +29,7 @@ class WelcomeScreen extends StatelessWidget {
             if (state is WelcomeInitial) {
               return WelcomeScreenWidget();
             }
-            return CircularProgressIndicator(); // TODO MUST FIX THIS SHIT
+            return LoadingScreen();
           },
         ),
       ),
@@ -37,9 +38,7 @@ class WelcomeScreen extends StatelessWidget {
 }
 
 class WelcomeScreenWidget extends StatelessWidget {
-  const WelcomeScreenWidget({
-    super.key,
-  });
+  const WelcomeScreenWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +74,7 @@ class WelcomeScreenWidget extends StatelessWidget {
         ),
         Text(
           "Вход через",
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall!.copyWith(fontSize: 12, color: Colors.black.withAlpha(150)),
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 12, color: Colors.black.withAlpha(150)),
         ),
         Expanded(child: SizedBox()),
         Image.asset("assets/images/chaban.png"),

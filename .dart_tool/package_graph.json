@@ -17,6 +17,7 @@
         "flutter",
         "flutter_bloc",
         "flutter_dotenv",
+        "flutter_spinkit",
         "get_it",
         "go_router",
         "google_sign_in",
@@ -138,6 +139,13 @@
         "async",
         "collection",
         "meta"
+      ]
+    },
+    {
+      "name": "flutter_spinkit",
+      "version": "5.2.1",
+      "dependencies": [
+        "flutter"
       ]
     },
     {

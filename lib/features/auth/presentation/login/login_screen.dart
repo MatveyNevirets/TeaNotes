@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_snackbar.dart';
+import 'package:tea_list/core/widgets/loading_screen.dart';
 import 'package:tea_list/core/widgets/stylized_button.dart';
 import 'package:tea_list/core/widgets/stylized_text_field.dart';
 import 'package:tea_list/features/auth/presentation/login/bloc/login_bloc.dart';
@@ -30,7 +31,7 @@ class LoginScreen extends StatelessWidget {
             if (state is LoginInitial) {
               return LoginScreenWidgets();
             }
-            return CircularProgressIndicator(); // TODO CREATE NORMAL SHIT
+            return LoadingScreen();
           },
         ),
       ),
