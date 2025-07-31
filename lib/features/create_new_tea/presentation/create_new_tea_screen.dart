@@ -186,7 +186,7 @@ class _CreateNewTeaScreenState extends State<CreateNewTeaScreen> {
             child: SizedBox(
               width: 50,
               height: 100,
-              child: StylizedTextField(lableText: "Цена/Грамм", controller: priceController, isNumberKeyboard: true),
+              child: StylizedTextField(lableText: "Цена/Гр", controller: priceController, isNumberKeyboard: true),
             ),
           ),
           Expanded(child: SizedBox()),
@@ -219,6 +219,7 @@ class _CreateNewTeaScreenState extends State<CreateNewTeaScreen> {
                   height: 50,
                   width: MediaQuery.of(context).size.width,
                   child: DropdownButton<String>(
+                    dropdownColor: AppColors.applicationBaseColor,
                     underline: ColoredBox(
                       color: AppColors.applicationBaseColor,
                       child: SizedBox(height: 2, width: 100),
@@ -262,7 +263,7 @@ class _CreateNewTeaScreenState extends State<CreateNewTeaScreen> {
                             child: Image.file(_imageFile!, fit: BoxFit.cover),
                           ),
                         )
-                        : Positioned(child: Image.asset(pathToTeaImage, fit: BoxFit.cover)),
+                        : Positioned(child: Image.asset(pathToTeaImage, fit: BoxFit.cover, color: Colors.black)),
                     Positioned(
                       left: MediaQuery.of(context).size.width / 11.5,
                       right: MediaQuery.of(context).size.width / 16,
@@ -273,7 +274,7 @@ class _CreateNewTeaScreenState extends State<CreateNewTeaScreen> {
                                 "Добавить",
                                 style: Theme.of(
                                   context,
-                                ).textTheme.bodySmall!.copyWith(fontSize: 12, color: AppColors.applicationBaseColor),
+                                ).textTheme.bodySmall!.copyWith(fontSize: 12, color: Colors.black),
                               )
                               : SizedBox(),
                     ),

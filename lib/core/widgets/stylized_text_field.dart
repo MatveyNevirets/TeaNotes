@@ -33,6 +33,7 @@ class StylizedTextField extends StatelessWidget {
 
       keyboardType: isNumberKeyboard ? TextInputType.number : TextInputType.text,
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         constraints: size != null ? BoxConstraints(maxHeight: size!.height, maxWidth: size!.width) : null,
         labelText: lableText,
         labelStyle: textStyle.copyWith(color: textColor ?? textStyle.color, fontSize: fontSize ?? textStyle.fontSize),
