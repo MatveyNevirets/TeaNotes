@@ -18,7 +18,7 @@ class TeaListRepositoryImpl implements TeaListRepository {
   Future<Either<Failure, String>> insertTea(TeaModel tea) async {
     try {
       await dataSource.insertTea(tea);
-      return Right("Success");
+      return Right("Успешно!");
     } on Object catch (error, stack) {
       return Left(DatabaseInsertException(error, stack));
     }

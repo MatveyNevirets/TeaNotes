@@ -7,8 +7,9 @@ import 'package:tea_list/core/consts/tea_models_list.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/features/home/data/repository/datasource.dart';
+import 'package:tea_list/features/home/data/repository/init_datasource_repository.dart';
 
-class LocalDataSource implements DataSource {
+class LocalDataSource implements DataSource, InitDatasourceRepository {
   late final Database teaDatabase;
 
   LocalDataSource() {

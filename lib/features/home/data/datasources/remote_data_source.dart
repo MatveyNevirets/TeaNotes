@@ -39,14 +39,16 @@ class FirebaseRemoteDataSource implements DataSource {
   }
 
   @override
-  Future<Either<Failure, String>> insertTea(TeaModel tea) {
-    // TODO: implement insertTea
-    throw UnimplementedError();
+  Future<Either<Failure, String>> insertTea(TeaModel tea) async {
+    // Here we get user's id
+    final uid = auth.currentUser!.uid;
+
+    // Here we insert new tea into database
+    await instance.collection("users").doc(uid).update({
+      "teas": FieldValue.arrayUnion([tea.toMap()]),
+    });
+
+    return Right("Успешно!");
   }
 
-  @override
-  Future<void> initDataSource() {
-    // TODO: implement initDataSource
-    throw UnimplementedError();
-  }
 }

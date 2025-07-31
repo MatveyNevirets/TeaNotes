@@ -138,24 +138,33 @@ class AuthFirebaseImpl implements AuthRepository {
       // Fetch user's data later
       final userFirebase = await FirebaseAuth.instance.signInWithCredential(googleCredential);
 
-      // Here we create user model to trasform that one to map
-      final user = UserModel(email: googleAccount.email, password: "google", name: googleAccount.displayName, teas: []);
+      final userIntoFirestore = await FirebaseFirestore.instance.collection("users").doc(userFirebase.user!.uid).get();
 
-      // Here we get all default_teas from firestore
-      final defaultTeasQuery = await FirebaseFirestore.instance.collection("default_teas").get();
+      if (!userIntoFirestore.exists) {
+        // Here we create user model to trasform that one to map
+        final user = UserModel(
+          email: googleAccount.email,
+          password: "google",
+          name: googleAccount.displayName,
+          teas: [],
+        );
 
-      // Here we create List<Map<String, dynamic>> list
-      final defaultTeas = defaultTeasQuery.docs.map((doc) => doc.data()).toList();
+        // Here we get all default_teas from firestore
+        final defaultTeasQuery = await FirebaseFirestore.instance.collection("default_teas").get();
 
-      // Here we add to new user all defaults tea
-      user.teas = defaultTeas.map((teaMap) => TeaModel.fromMap(teaMap)).toList();
+        // Here we create List<Map<String, dynamic>> list
+        final defaultTeas = defaultTeasQuery.docs.map((doc) => doc.data()).toList();
 
-      // Here we transform user to map
-      Map<String, dynamic> userMap = user.toMap();
+        // Here we add to new user all defaults tea
+        user.teas = defaultTeas.map((teaMap) => TeaModel.fromMap(teaMap)).toList();
 
-      // And then insert into firestore with doc's name like user's id
-      // And another user's info like map
-      await FirebaseFirestore.instance.collection("users").doc(userFirebase.user!.uid).set(userMap);
+        // Here we transform user to map
+        Map<String, dynamic> userMap = user.toMap();
+
+        // And then insert into firestore with doc's name like user's id
+        // And another user's info like map
+        await FirebaseFirestore.instance.collection("users").doc(userFirebase.user!.uid).set(userMap);
+      }
     } on Object catch (error, stack) {
       return Left(GoogleSignInException(error, stack));
     }
