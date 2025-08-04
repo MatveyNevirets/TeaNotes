@@ -6,6 +6,7 @@ import 'package:tea_list/features/auth/presentation/registration/registration_pa
 import 'package:tea_list/features/auth/presentation/welcome/welcome_page.dart';
 import 'package:tea_list/features/details/presentation/details_page.dart';
 import 'package:tea_list/features/main_page/main_page.dart';
+import 'package:tea_list/features/runtime_ceremony/presentation/ceremony_page.dart';
 import 'package:tea_list/features/tea_post_details/presentation/tea_post_details.dart';
 import 'package:tea_list/features/tea_posts/domain/entity/tea_post_entity.dart';
 import 'package:tea_list/features/tea_posts/presentation/tea_posts_page.dart';
@@ -45,7 +46,14 @@ final router = GoRouter(
             final homeContext = data[1] as BuildContext;
             return DetailsPage(tea: tea, homeContext: homeContext);
           },
+  
         ),
+            GoRoute(
+              path: '/tea_ceremony',
+              builder: (context, state) {
+                return CeremonyPage();
+              },
+            ),
         GoRoute(
           path: "/tea_posts",
           routes: [

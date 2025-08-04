@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/are_you_sure_dialog.dart';
@@ -61,7 +62,7 @@ class DetailsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: StylizedButton(
-                  onPressed: () {},
+                  onPressed: () => context.go("/main_page/tea_ceremony"),
                   text: "Начать церемонию",
                   fontSize: 16,
                   backgroundColor: AppColors.selectedItemColor,
