@@ -7,11 +7,13 @@ import 'package:tea_list/features/runtime_ceremony/presentation/bloc/ceremony_bl
 class WarmUpScreen extends StatelessWidget {
   const WarmUpScreen({super.key});
 
+  final textColor = const Color.fromARGB(180, 0, 0, 0);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          // This is a title of process text
           Positioned(
             top: 64,
             left: MediaQuery.of(context).size.width / 6,
@@ -19,9 +21,10 @@ class WarmUpScreen extends StatelessWidget {
             child: Text(
               "Прогрейте посуду",
               textAlign: TextAlign.left,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 40, color: Colors.black.withAlpha(180)),
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 40, color: textColor),
             ),
           ),
+          // This is our bottom brown part of the screen
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -30,6 +33,7 @@ class WarmUpScreen extends StatelessWidget {
               height: MediaQuery.of(context).size.height / 2.5,
             ),
           ),
+          // This is the image with shadow
           Align(
             alignment: Alignment.center,
             child: Container(
@@ -50,6 +54,7 @@ class WarmUpScreen extends StatelessWidget {
               ),
             ),
           ),
+          // This is button
           Positioned(
             bottom: MediaQuery.of(context).size.height / 15,
             left: MediaQuery.of(context).size.width / 8,
@@ -59,7 +64,7 @@ class WarmUpScreen extends StatelessWidget {
               onPressed: () => context.read<CeremonyBloc>().add(OnWarmedUpCeremonyEvent()),
               text: "Готово",
               backgroundColor: AppColors.application2BaseColor,
-              textColor: Colors.black.withAlpha(180),
+              textColor: textColor,
             ),
           ),
         ],
