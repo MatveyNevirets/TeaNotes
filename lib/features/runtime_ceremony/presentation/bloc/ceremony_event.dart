@@ -6,3 +6,7 @@ sealed class CeremonyEvent {}
 class OnWarmedUpCeremonyEvent extends CeremonyEvent {}
 
 class OnClearedTeaCeremonyEvent extends CeremonyEvent {}
+
+class StartSpillTimerEvent extends CeremonyEvent {}
+
+class StopSpillTimerEvent extends CeremonyEvent {}

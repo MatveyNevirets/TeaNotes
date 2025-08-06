@@ -7,9 +7,9 @@ import 'package:tea_list/features/runtime_ceremony/presentation/bloc/ceremony_bl
 class WarmUpScreen extends StatelessWidget {
   const WarmUpScreen({super.key});
 
-  final textColor = const Color.fromARGB(180, 0, 0, 0);
   @override
   Widget build(BuildContext context) {
+    Color textColor = Colors.black.withAlpha(180);
     return Scaffold(
       body: Stack(
         children: [

@@ -116,9 +116,7 @@ class HomeScreen extends StatelessWidget {
                     left: 10,
                     right: 10,
                     height: 50,
-                    child: TeaTypesTab(
-                      onTeaTypeChanged: (index) => context.read<HomeBloc>().add(FetchDataEvent(index)),
-                    ),
+                    child: TeaTabWidget(onTabChanged: (index) => context.read<HomeBloc>().add(FetchDataEvent(index))),
                   ),
                 ],
               ),

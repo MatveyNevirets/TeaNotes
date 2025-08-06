@@ -19,9 +19,9 @@ class TeaApplication extends StatelessWidget {
           selectionHandleColor: AppColors.selectedItemColor,
         ),
         textTheme: TextTheme(
-          bodyLarge: TextStyle(fontSize: 30, fontFamily: 'Coiny', fontWeight: FontWeight.w400),
-          bodyMedium: TextStyle(fontSize: 24, fontFamily: 'Coiny'),
-          bodySmall: TextStyle(fontSize: 14, fontFamily: 'Coiny'),
+          bodyLarge: TextStyle(fontSize: 30, fontFamily: 'Coiny', fontWeight: FontWeight.w400, height: 0.9),
+          bodyMedium: TextStyle(fontSize: 24, fontFamily: 'Coiny', height: 0.9),
+          bodySmall: TextStyle(fontSize: 14, fontFamily: 'Coiny', height: 0.9),
         ),
       ),
     );

@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:tea_list/core/widgets/tea_type_item.dart';
 import 'package:tea_list/core/consts/tea_types_list.dart';
+import 'package:tea_list/core/widgets/tea_type_item.dart';
 
-class TeaTypesTab extends StatefulWidget {
-  const TeaTypesTab({super.key, required this.onTeaTypeChanged});
+class TeaTabWidget extends StatefulWidget {
+  const TeaTabWidget({super.key, required this.onTabChanged, this.children});
 
-  final Function(int index) onTeaTypeChanged;
+  final Function(int index) onTabChanged;
+  final List<String>? children;
 
   @override
-  State<TeaTypesTab> createState() => _TeaTypesTabState();
+  State<TeaTabWidget> createState() => _TeaTabWidgetState();
 }
 
-class _TeaTypesTabState extends State<TeaTypesTab> {
+class _TeaTabWidgetState extends State<TeaTabWidget> {
   int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: teaTypesList.length,
+      itemCount: widget.children?.length ?? teaTypesList.length,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
             setState(() {
               currentIndex = index;
-              widget.onTeaTypeChanged.call(currentIndex);
+              widget.onTabChanged.call(currentIndex);
             });
           },
-          child: TeaTypeItem(title: teaTypesList[index], currentIndex: currentIndex, index: index),
+          child: TeaTypeItem(
+            title: widget.children?[index] ?? teaTypesList[index],
+            currentIndex: currentIndex,
+            index: index,
+          ),
         );
       }, //
     );

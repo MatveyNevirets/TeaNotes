@@ -8,3 +8,7 @@ final class CeremonyInitial extends CeremonyState {}
 class ClearTeaCeremonyState extends CeremonyState {}
 
 class StartCeremonyState extends CeremonyState {}
+
+class SpillStartState extends CeremonyState {}
+
+class SpillStopState extends CeremonyState {}
