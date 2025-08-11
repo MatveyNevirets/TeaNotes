@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:tea_list/features/runtime_ceremony/data/models/ceremony_model.dart';
 import 'package:tea_list/features/runtime_ceremony/domain/entities/spill_entity.dart';
 
 part 'ceremony_event.dart';
@@ -15,6 +18,22 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
     on<StopSpillTimerEvent>(_stopSpillTimer);
     on<TabChangedEvent>(_onTabChanged);
     on<UpdateSpillFieldEvent>(_onFieldUpdated);
+    on<SuccessFinishEvent>(_onSuccessFinish);
+  }
+
+  Future<void> _onSuccessFinish(SuccessFinishEvent event, Emitter<CeremonyState> emit) async {
+    final auth = FirebaseAuth.instance;
+    final instance = FirebaseFirestore.instance;
+
+    final user = auth.currentUser;
+
+    final ceremony = CeremonyModel(spills: spills);
+
+    await instance.collection("users").doc(user!.uid).update({
+      "ceremonies": FieldValue.arrayUnion([ceremony.toMap()]),
+    });
+
+    emit(SuccessFinishState(spills));
   }
 
   void _onFieldUpdated(UpdateSpillFieldEvent event, Emitter<CeremonyState> emit) {

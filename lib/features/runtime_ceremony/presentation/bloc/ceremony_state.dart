@@ -20,6 +20,10 @@ class StartCeremonyState extends CeremonyState {
   const StartCeremonyState(super.spills);
 }
 
+class SuccessFinishState extends CeremonyState {
+  const SuccessFinishState(super.spills);
+}
+
 class ChangedSpillState extends CeremonyState {
   int index;
   ChangedSpillState(this.index, super.spills);

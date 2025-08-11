@@ -18,7 +18,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       // Here we shows loading screen
       emit(LoginLoadingState());
       // Create new user entity with our parameters
-      final newUser = UserEntity(name: "name", email: event.email, password: event.password, teas: []);
+      final newUser = UserEntity(name: "name", email: event.email, password: event.password, teas: [], ceremonies: []);
 
       // From auth repository we calls loginWithEmail method
       final response = await _authRepository.loginWithEmail(newUser);

@@ -12,6 +12,8 @@ class StartSpillTimerEvent extends CeremonyEvent {}
 
 class StopSpillTimerEvent extends CeremonyEvent {}
 
+class SuccessFinishEvent extends CeremonyEvent {}
+
 class TabChangedEvent extends CeremonyEvent {
   int index;
   List<SpillEntity>? spills;

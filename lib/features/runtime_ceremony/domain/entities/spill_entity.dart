@@ -2,7 +2,6 @@ import 'package:tea_list/features/runtime_ceremony/data/models/spill_model.dart'
 
 class SpillEntity extends SpillModel {
   SpillEntity({
-    super.spillNumber,
     super.smellUnderLid,
     super.smellFromGaiwan,
     super.smellFromEmptyBowl,
@@ -26,7 +25,6 @@ class SpillEntity extends SpillModel {
     String? teaState,
   }) {
     return SpillEntity(
-      spillNumber: spillNumber ?? this.spillNumber,
       smellUnderLid: smellUnderLid ?? this.smellUnderLid,
       smellFromGaiwan: smellFromGaiwan ?? this.smellFromGaiwan,
       smellFromEmptyBowl: smellFromEmptyBowl ?? this.smellFromEmptyBowl,

@@ -20,7 +20,13 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     emit(LoadingRegistration());
 
     // Create new User entity with our parameters
-    final newUser = UserEntity(name: event.name, email: event.email, password: event.password, teas: []);
+    final newUser = UserEntity(
+      name: event.name,
+      email: event.email,
+      password: event.password,
+      teas: [],
+      ceremonies: [],
+    );
 
     // Here we with our auth repository send request
     // To register new user

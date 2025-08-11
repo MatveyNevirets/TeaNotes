@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
+import 'package:tea_list/core/widgets/are_you_sure_dialog.dart';
+import 'package:tea_list/core/widgets/base_snackbar.dart';
 import 'package:tea_list/core/widgets/stylized_loading_indicator.dart';
 import 'package:tea_list/core/widgets/stylized_text_field.dart';
 import 'package:tea_list/core/widgets/tea_types_tab.dart';
@@ -46,174 +49,196 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: BlocListener<CeremonyBloc, CeremonyState>(
-          listener: (context, state) {
-            spills = state.spills;
-            if (state is ChangedSpillState) {
-              currentIndex = state.index;
-            }
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              BlocBuilder<CeremonyBloc, CeremonyState>(
-                builder: (context, state) {
-                  spills = state.spills;
+    return BlocConsumer<CeremonyBloc, CeremonyState>(
+      listener: (context, state) {
+        spills = state.spills;
+        if (state is ChangedSpillState) {
+          currentIndex = state.index;
+        }
+        if (state is SuccessFinishState) {
+          context.go("/main_page");
+          showSnackBar(context, "Успешное завершение!");
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder:
+                    (dialogContext) => AreYouSureDialog(
+                      onNot: () => Navigator.of(dialogContext).pop(),
+                      onYes: () {
+                        Navigator.of(dialogContext).pop();
 
-                  if (state is StartCeremonyState) {
-                    return _StartSpillTimerWidget(
-                      onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
-                    );
-                  } else if (state is SpillStartState) {
-                    return _SpillTimerInProcessWidget(
-                      onClick: () => context.read<CeremonyBloc>().add(StopSpillTimerEvent()),
-                    );
-                  } else if (state is SpillStopState) {
-                    return _NextSpillTimerWidget(
-                      onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
-                    );
-                  } else if (state is ChangedSpillState) {
-                    return _NextSpillTimerWidget(
-                      onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
-                    );
-                  }
-                  return StylizedLoadingIndicator();
-                },
-              ),
-              SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.application3BaseColor,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 1),
-                      color: AppColors.application3BaseColor,
-                      spreadRadius: 1,
-                      blurRadius: 3,
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.all(8),
-                height: 70,
-                child: BlocBuilder<CeremonyBloc, CeremonyState>(
-                  builder: (context, state) {
-                    return TeaTabWidget(
-                      onTabChanged: (index) {
-                        setState(() => currentIndex = index);
-                        context.read<CeremonyBloc>().add(TabChangedEvent(index: index, spills: spills));
+                        context.read<CeremonyBloc>().add(SuccessFinishEvent());
                       },
-                      children: List.generate(spills?.length ?? 0, (index) => "Пролив ${index + 1}"),
-                    );
+                    ),
+              );
+            },
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                BlocBuilder<CeremonyBloc, CeremonyState>(
+                  builder: (context, state) {
+                    spills = state.spills;
+
+                    if (state is StartCeremonyState) {
+                      return _StartSpillTimerWidget(
+                        onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
+                      );
+                    } else if (state is SpillStartState) {
+                      return _SpillTimerInProcessWidget(
+                        onClick: () => context.read<CeremonyBloc>().add(StopSpillTimerEvent()),
+                      );
+                    } else if (state is SpillStopState) {
+                      return _NextSpillTimerWidget(
+                        onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
+                      );
+                    } else if (state is ChangedSpillState) {
+                      return _NextSpillTimerWidget(
+                        onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
+                      );
+                    }
+                    return StylizedLoadingIndicator();
                   },
                 ),
-              ),
-              Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      color: Colors.white.withAlpha(30),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: BlocBuilder<CeremonyBloc, CeremonyState>(
-                          builder: (context, state) {
-                            final currentSpill = state.spills[currentIndex];
-                            log(state.runtimeType.toString());
-                            if (state is ChangedSpillState || state is SpillStopState || state is SpillStartState) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
+                SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.application3BaseColor,
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0, 1),
+                        color: AppColors.application3BaseColor,
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                      ),
+                    ],
+                  ),
+                  padding: EdgeInsets.all(8),
+                  height: 70,
+                  child: BlocBuilder<CeremonyBloc, CeremonyState>(
+                    builder: (context, state) {
+                      return TeaTabWidget(
+                        onTabChanged: (index) {
+                          setState(() => currentIndex = index);
+                          context.read<CeremonyBloc>().add(TabChangedEvent(index: index, spills: spills));
+                        },
+                        children: List.generate(spills?.length ?? 0, (index) => "Пролив ${index + 1}"),
+                      );
+                    },
+                  ),
+                ),
+                Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        color: Colors.white.withAlpha(30),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: BlocBuilder<CeremonyBloc, CeremonyState>(
+                            builder: (context, state) {
+                              final currentSpill = state.spills[currentIndex];
+                              log(state.runtimeType.toString());
+                              if (state is ChangedSpillState || state is SpillStopState || state is SpillStartState) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
 
-                                children: [
-                                  SizedBox(height: 20),
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text("Аромат", style: Theme.of(context).textTheme.bodyLarge),
-                                  ),
-                                  SizedBox(height: 25),
-                                  _buildTextField(
-                                    context,
-                                    label: "Из под крышки гайвани",
-                                    fieldName: "smellUnderLid",
-                                    initialValue: currentSpill.smellUnderLid,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  _buildTextField(
-                                    context,
-                                    label: "Из гайвани",
-                                    fieldName: "smellFromGaiwan",
-                                    initialValue: currentSpill.smellFromGaiwan,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  _buildTextField(
-                                    context,
-                                    label: "Из пустой пиалы",
-                                    fieldName: "smellFromEmptyBowl",
-                                    initialValue: currentSpill.smellFromEmptyBowl,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  _buildTextField(
-                                    context,
-                                    label: "Из пустого Ча Хай",
-                                    fieldName: "smellFromEmptyChaHai",
-                                    initialValue: currentSpill.smellFromEmptyChaHai,
-                                  ),
+                                  children: [
+                                    SizedBox(height: 20),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text("Аромат", style: Theme.of(context).textTheme.bodyLarge),
+                                    ),
+                                    SizedBox(height: 25),
+                                    _buildTextField(
+                                      context,
+                                      label: "Из под крышки гайвани",
+                                      fieldName: "smellUnderLid",
+                                      initialValue: currentSpill.smellUnderLid,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    _buildTextField(
+                                      context,
+                                      label: "Из гайвани",
+                                      fieldName: "smellFromGaiwan",
+                                      initialValue: currentSpill.smellFromGaiwan,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    _buildTextField(
+                                      context,
+                                      label: "Из пустой пиалы",
+                                      fieldName: "smellFromEmptyBowl",
+                                      initialValue: currentSpill.smellFromEmptyBowl,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    _buildTextField(
+                                      context,
+                                      label: "Из пустого Ча Хай",
+                                      fieldName: "smellFromEmptyChaHai",
+                                      initialValue: currentSpill.smellFromEmptyChaHai,
+                                    ),
 
-                                  SizedBox(height: 30),
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text("Пролив", style: Theme.of(context).textTheme.bodyLarge),
-                                  ),
-                                  SizedBox(height: 25),
-                                  _buildTextField(
-                                    context,
-                                    label: "Цвет",
-                                    fieldName: "colorOfTea",
-                                    initialValue: currentSpill.colorOfTea,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  _buildTextField(
-                                    context,
-                                    label: "Вкус",
-                                    fieldName: "tasteOfTea",
-                                    initialValue: currentSpill.tasteOfTea,
-                                  ),
-                                  SizedBox(height: 30),
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text("Прочее", style: Theme.of(context).textTheme.bodyLarge),
-                                  ),
-                                  SizedBox(height: 25),
-                                  _buildTextField(
-                                    context,
-                                    label: "Общие впечатления",
-                                    fieldName: "impressions",
-                                    initialValue: currentSpill.impressions,
-                                  ),
-                                  const SizedBox(height: 25),
-                                  _buildTextField(
-                                    context,
-                                    label: "Состояние",
-                                    fieldName: "teaState",
-                                    initialValue: currentSpill.teaState,
-                                  ),
-                                  SizedBox(height: 40),
-                                ],
-                              );
-                            }
-                            return Container();
-                          },
+                                    SizedBox(height: 30),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text("Пролив", style: Theme.of(context).textTheme.bodyLarge),
+                                    ),
+                                    SizedBox(height: 25),
+                                    _buildTextField(
+                                      context,
+                                      label: "Цвет",
+                                      fieldName: "colorOfTea",
+                                      initialValue: currentSpill.colorOfTea,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    _buildTextField(
+                                      context,
+                                      label: "Вкус",
+                                      fieldName: "tasteOfTea",
+                                      initialValue: currentSpill.tasteOfTea,
+                                    ),
+                                    SizedBox(height: 30),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text("Прочее", style: Theme.of(context).textTheme.bodyLarge),
+                                    ),
+                                    SizedBox(height: 25),
+                                    _buildTextField(
+                                      context,
+                                      label: "Общие впечатления",
+                                      fieldName: "impressions",
+                                      initialValue: currentSpill.impressions,
+                                    ),
+                                    const SizedBox(height: 25),
+                                    _buildTextField(
+                                      context,
+                                      label: "Состояние",
+                                      fieldName: "teaState",
+                                      initialValue: currentSpill.teaState,
+                                    ),
+                                    SizedBox(height: 40),
+                                  ],
+                                );
+                              }
+                              return Container();
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

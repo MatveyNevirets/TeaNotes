@@ -147,6 +147,7 @@ class AuthFirebaseImpl implements AuthRepository {
           password: "google",
           name: googleAccount.displayName,
           teas: [],
+          ceremonies: [],
         );
 
         // Here we get all default_teas from firestore
