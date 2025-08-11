@@ -1,14 +1,34 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'ceremony_bloc.dart';
 
 @immutable
-sealed class CeremonyState {}
+sealed class CeremonyState {
+  final List<SpillEntity> spills;
 
-final class CeremonyInitial extends CeremonyState {}
+  const CeremonyState(this.spills);
+}
 
-class ClearTeaCeremonyState extends CeremonyState {}
+final class CeremonyInitial extends CeremonyState {
+  const CeremonyInitial(super.spills);
+}
 
-class StartCeremonyState extends CeremonyState {}
+class ClearTeaCeremonyState extends CeremonyState {
+  const ClearTeaCeremonyState(super.spills);
+}
 
-class SpillStartState extends CeremonyState {}
+class StartCeremonyState extends CeremonyState {
+  const StartCeremonyState(super.spills);
+}
 
-class SpillStopState extends CeremonyState {}
+class ChangedSpillState extends CeremonyState {
+  int index;
+  ChangedSpillState(this.index, super.spills);
+}
+
+class SpillStartState extends CeremonyState {
+  const SpillStartState(super.spills);
+}
+
+class SpillStopState extends CeremonyState {
+  const SpillStopState(super.spills);
+}

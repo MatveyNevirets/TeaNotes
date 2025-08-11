@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height / 15,
                   child: StylizedTextField(
-                    onChanged: () => searchTea(teaName: searchController.text),
+                    onChanged: (value) => searchTea(teaName: searchController.text),
                     lableText: "Поиск",
                     textColor: Colors.white,
                     controller: searchController,

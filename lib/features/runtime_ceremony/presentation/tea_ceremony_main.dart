@@ -19,7 +19,10 @@ class TeaCeremonyMain extends StatelessWidget {
         if (state is ClearTeaCeremonyState) {
           return ClearTeaScreen();
         }
-        if (state is StartCeremonyState || state is SpillStartState || state is SpillStopState) {
+        if (state is StartCeremonyState ||
+            state is SpillStartState ||
+            state is SpillStopState ||
+            state is ChangedSpillState) {
           return TeaCeremonyScreen();
         }
 

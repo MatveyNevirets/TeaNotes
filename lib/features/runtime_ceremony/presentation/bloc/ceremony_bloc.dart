@@ -1,29 +1,60 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:tea_list/features/runtime_ceremony/domain/entities/spill_entity.dart';
 
 part 'ceremony_event.dart';
 part 'ceremony_state.dart';
 
 class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
-  CeremonyBloc() : super(CeremonyInitial()) {
+  List<SpillEntity> spills = [];
+
+  CeremonyBloc() : super(CeremonyInitial([])) {
     on<OnClearedTeaCeremonyEvent>(_teaWasCleared);
     on<OnWarmedUpCeremonyEvent>(_dishesWasWarmed);
     on<StartSpillTimerEvent>(_startSpillTimer);
     on<StopSpillTimerEvent>(_stopSpillTimer);
+    on<TabChangedEvent>(_onTabChanged);
+    on<UpdateSpillFieldEvent>(_onFieldUpdated);
   }
+
+  void _onFieldUpdated(UpdateSpillFieldEvent event, Emitter<CeremonyState> emit) {
+    final updatedSpills = List<SpillEntity>.from(spills);
+
+    final current = updatedSpills[event.index];
+
+    updatedSpills[event.index] = updatedSpills[event.index].copyWith(
+      smellUnderLid: event.fieldName == 'smellUnderLid' ? event.value : current.smellUnderLid,
+      smellFromGaiwan: event.fieldName == 'smellFromGaiwan' ? event.value : current.smellFromGaiwan,
+      smellFromEmptyBowl: event.fieldName == 'smellFromEmptyBowl' ? event.value : current.smellFromEmptyBowl,
+      smellFromEmptyChaHai: event.fieldName == 'smellFromEmptyChaHai' ? event.value : current.smellFromEmptyChaHai,
+      colorOfTea: event.fieldName == 'colorOfTea' ? event.value : current.colorOfTea,
+      tasteOfTea: event.fieldName == 'tasteOfTea' ? event.value : current.tasteOfTea,
+      impressions: event.fieldName == 'impressions' ? event.value : current.impressions,
+      teaState: event.fieldName == 'teaState' ? event.value : current.teaState,
+    );
+
+    spills = updatedSpills;
+    emit(ChangedSpillState(event.index, spills));
+  }
+
+  void _onTabChanged(TabChangedEvent event, Emitter<CeremonyState> emit) {
+    emit(ChangedSpillState(event.index, spills));
+  }
+
   void _dishesWasWarmed(OnWarmedUpCeremonyEvent event, Emitter<CeremonyState> emit) {
-    emit(ClearTeaCeremonyState());
+    emit(ClearTeaCeremonyState(spills));
   }
 
   void _teaWasCleared(OnClearedTeaCeremonyEvent event, Emitter<CeremonyState> emit) {
-    emit(StartCeremonyState());
+    emit(StartCeremonyState(spills));
   }
 
   void _startSpillTimer(StartSpillTimerEvent event, Emitter<CeremonyState> emit) {
-    emit(SpillStartState());
+    emit(SpillStartState(spills));
   }
 
   void _stopSpillTimer(StopSpillTimerEvent event, Emitter<CeremonyState> emit) {
-    emit(SpillStopState());
+    spills.add(SpillEntity());
+    emit(SpillStopState(spills));
   }
 }

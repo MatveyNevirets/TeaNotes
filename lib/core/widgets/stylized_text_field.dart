@@ -9,13 +9,17 @@ class StylizedTextField extends StatelessWidget {
     this.size,
     this.textColor,
     this.fontSize,
+    this.borderWidth,
+    this.borderRadius,
     this.isOutline = false,
     this.onChanged,
     required this.controller,
   });
-  final VoidCallback? onChanged;
+  final Function(String)? onChanged;
   String? lableText;
   Size? size;
+  double? borderWidth;
+  double? borderRadius;
   double? fontSize;
   TextEditingController controller;
   Color? textColor;
@@ -27,7 +31,7 @@ class StylizedTextField extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme.bodySmall;
 
     return TextField(
-      onChanged: (value) => onChanged?.call(),
+      onChanged: (value) => onChanged?.call(value),
       controller: controller,
       style: textStyle!.copyWith(color: textColor ?? textStyle.color, fontSize: fontSize ?? textStyle.fontSize),
 
@@ -40,12 +44,24 @@ class StylizedTextField extends StatelessWidget {
 
         focusedBorder:
             isOutline
-                ? OutlineInputBorder(borderSide: BorderSide(width: 3, color: AppColors.selectedItemColor))
-                : UnderlineInputBorder(borderSide: BorderSide(width: 3, color: AppColors.selectedItemColor)),
+                ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(borderRadius ?? 8),
+                  borderSide: BorderSide(width: borderWidth ?? 3, color: AppColors.selectedItemColor),
+                )
+                : UnderlineInputBorder(
+                  borderRadius: BorderRadius.circular(borderRadius ?? 8),
+                  borderSide: BorderSide(width: borderWidth ?? 3, color: AppColors.selectedItemColor),
+                ),
         enabledBorder:
             isOutline
-                ? OutlineInputBorder(borderSide: BorderSide(width: 1.5, color: AppColors.applicationBaseColor))
-                : UnderlineInputBorder(borderSide: BorderSide(width: 1.5, color: AppColors.applicationBaseColor)),
+                ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(borderRadius ?? 8),
+                  borderSide: BorderSide(width: borderWidth ?? 1.5, color: AppColors.applicationBaseColor),
+                )
+                : UnderlineInputBorder(
+                  borderRadius: BorderRadius.circular(borderRadius ?? 8),
+                  borderSide: BorderSide(width: borderWidth ?? 1.5, color: AppColors.applicationBaseColor),
+                ),
       ),
     );
   }
