@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
+import 'package:tea_list/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:tea_list/features/auth/presentation/registration/bloc/registration_bloc.dart';
 import 'package:tea_list/features/auth/presentation/registration/registration_screen.dart';
 
@@ -10,7 +10,7 @@ class RegistrationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepository = GetIt.I<AuthRepository>();
+    final authRepository = GetIt.I<AuthRemoteDataSource>();
     return BlocProvider(create: (context) => RegistrationBloc(authRepository), child: RegistrationScreen());
   }
 }

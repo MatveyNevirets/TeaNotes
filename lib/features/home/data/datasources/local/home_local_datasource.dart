@@ -5,7 +5,8 @@ import 'package:tea_list/core/models/tea_model.dart';
 // DataSource interface which will can help with
 // Different datasources like remote or local.
 // Or choose another database like SQLite and PostgreSQL
-abstract class DataSource {
+abstract class HomeLocalDataSource {
   Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type, {String? teaName});
   Future<Either<Failure, String>> insertTea(TeaModel tea);
+   Future<void> initDataSource();
 }

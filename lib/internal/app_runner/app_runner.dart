@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:tea_list/internal/app_runner/app_env.dart';
 import 'package:tea_list/internal/application/tea_application.dart';
 import 'package:tea_list/internal/di/app_depends.dart';
+import 'package:tea_list/services/firebase_options.dart';
 
 class AppRunner {
   // App enviroments for application dependencies
@@ -19,7 +21,11 @@ class AppRunner {
       () async {
         _initializeApp();
 
+        // Here we connect with .env file
         await dotenv.load(fileName: ".env");
+
+        // Here we iniailizing Firebase application
+        await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
         // Here we initializing all dependencies of this application
         final depends = AppDepends(appEnv);

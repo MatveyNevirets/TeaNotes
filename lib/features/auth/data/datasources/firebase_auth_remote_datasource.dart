@@ -2,22 +2,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart' hide GoogleSignInException;
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/core/models/tea_model.dart';
+import 'package:tea_list/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:tea_list/features/auth/data/models/user_model.dart';
-import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
 
-class AuthFirebaseImpl implements AuthRepository {
+class FirebaseAuthRemoteDatasource implements AuthRemoteDataSource {
+  final FirebaseAuth firebaseAuth;
+  final FirebaseFirestore firebaseFirestore;
+  final GoogleSignIn googleSignIn;
+
+  FirebaseAuthRemoteDatasource({
+    required this.firebaseAuth,
+    required this.firebaseFirestore,
+    required this.googleSignIn,
+  });
+
   @override
   Future<Either<Failure, String>> loginWithEmail(UserModel user) async {
     try {
       // Here we create userCredential with firebase
-      final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: user.email,
-        password: user.password,
-      );
+      final userCredential = await firebaseAuth.signInWithEmailAndPassword(email: user.email, password: user.password);
 
       // Here we fetch user from our firebase credential
       final currentUser = userCredential.user;
@@ -39,7 +45,7 @@ class AuthFirebaseImpl implements AuthRepository {
     try {
       // Here we try to fetch users from firestore database
       // And check email field
-      final doc = await FirebaseFirestore.instance.collection("users").where("email", isEqualTo: user.email).get();
+      final doc = await firebaseFirestore.collection("users").where("email", isEqualTo: user.email).get();
 
       if (doc.docs.isNotEmpty) {
         // If we see that email have exists
@@ -48,7 +54,7 @@ class AuthFirebaseImpl implements AuthRepository {
         return Right("Такой аккаунт уже существует!");
       } else {
         // Here we create user credentials with Firebase
-        final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
           email: user.email,
           password: user.password,
         );
@@ -70,7 +76,7 @@ class AuthFirebaseImpl implements AuthRepository {
           await waitForEmailVerification(newUser);
 
           // Here we get all default_teas from firestore
-          final defaultTeasQuery = await FirebaseFirestore.instance.collection("default_teas").get();
+          final defaultTeasQuery = await firebaseFirestore.collection("default_teas").get();
 
           // Here we create List<Map<String, dynamic>> list
           final defaultTeas = defaultTeasQuery.docs.map((doc) => doc.data()).toList();
@@ -84,7 +90,7 @@ class AuthFirebaseImpl implements AuthRepository {
           // When user verificated email
           // We insert him user id like doc title
           // And send as map him email and name
-          await FirebaseFirestore.instance.collection("users").doc(newUser.uid).set(userMap);
+          await firebaseFirestore.collection("users").doc(newUser.uid).set(userMap);
 
           // If all proccessed is OK
           // We go HomeScreen and shows snackbar
@@ -103,9 +109,6 @@ class AuthFirebaseImpl implements AuthRepository {
   Future<void> waitForEmailVerification(User? user) async {
     if (user == null) return;
 
-    // Here we get firebase instance
-    final firebaseAuth = GetIt.I<FirebaseAuth>();
-
     // If user that not null not verificated email
     while (!user!.emailVerified) {
       // We wait every 3 seconds
@@ -120,9 +123,6 @@ class AuthFirebaseImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, String>> signInWithGoogle() async {
-    // Here we fech google sign in from GetIt
-    final googleSignIn = GetIt.I<GoogleSignIn>();
-
     try {
       // Here we call google auth screen and wait
       // When user choose account
@@ -136,9 +136,9 @@ class AuthFirebaseImpl implements AuthRepository {
       // Here we insert google account into firebase authentication
       // userFirebase need to fetch normal uid parameter to
       // Fetch user's data later
-      final userFirebase = await FirebaseAuth.instance.signInWithCredential(googleCredential);
+      final userFirebase = await firebaseAuth.signInWithCredential(googleCredential);
 
-      final userIntoFirestore = await FirebaseFirestore.instance.collection("users").doc(userFirebase.user!.uid).get();
+      final userIntoFirestore = await firebaseFirestore.collection("users").doc(userFirebase.user!.uid).get();
 
       if (!userIntoFirestore.exists) {
         // Here we create user model to trasform that one to map
@@ -151,7 +151,7 @@ class AuthFirebaseImpl implements AuthRepository {
         );
 
         // Here we get all default_teas from firestore
-        final defaultTeasQuery = await FirebaseFirestore.instance.collection("default_teas").get();
+        final defaultTeasQuery = await firebaseFirestore.collection("default_teas").get();
 
         // Here we create List<Map<String, dynamic>> list
         final defaultTeas = defaultTeasQuery.docs.map((doc) => doc.data()).toList();
@@ -164,7 +164,7 @@ class AuthFirebaseImpl implements AuthRepository {
 
         // And then insert into firestore with doc's name like user's id
         // And another user's info like map
-        await FirebaseFirestore.instance.collection("users").doc(userFirebase.user!.uid).set(userMap);
+        await firebaseFirestore.collection("users").doc(userFirebase.user!.uid).set(userMap);
       }
     } on Object catch (error, stack) {
       return Left(GoogleSignInException(error, stack));

@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
+import 'package:tea_list/features/auth/data/datasources/auth_remote_datasource.dart';
 
 part 'welcome_event.dart';
 part 'welcome_state.dart';
 
 class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
-  final AuthRepository _authRepository;
+  final AuthRemoteDataSource _authRepository;
 
   WelcomeBloc(this._authRepository) : super(WelcomeInitial()) {
     on<TryGoogleSignInEvent>(_tryGoogleSignIn);

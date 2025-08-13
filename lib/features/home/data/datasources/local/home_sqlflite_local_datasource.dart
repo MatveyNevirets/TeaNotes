@@ -6,13 +6,12 @@ import 'package:sqflite/sqflite.dart';
 import 'package:tea_list/core/consts/tea_models_list.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/core/models/tea_model.dart';
-import 'package:tea_list/features/home/data/repository/datasource.dart';
-import 'package:tea_list/features/home/data/repository/init_datasource_repository.dart';
+import 'package:tea_list/features/home/data/datasources/local/home_local_datasource.dart';
 
-class LocalDataSource implements DataSource, InitDatasourceRepository {
+class HomeSqfliteLocalDataSource implements HomeLocalDataSource {
   late final Database teaDatabase;
 
-  LocalDataSource() {
+  HomeSqfliteLocalDataSource() {
     initDataSource();
   }
 

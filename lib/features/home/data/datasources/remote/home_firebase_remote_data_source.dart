@@ -7,9 +7,9 @@ import 'package:get_it/get_it.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/features/auth/data/models/user_model.dart';
-import 'package:tea_list/features/home/data/repository/datasource.dart';
+import 'package:tea_list/features/home/data/datasources/remote/home_remote_datasource.dart';
 
-class FirebaseRemoteDataSource implements DataSource {
+class HomeFirebaseRemoteDataSource implements HomeRemoteDataSource {
   final FirebaseFirestore instance = FirebaseFirestore.instance;
   final auth = GetIt.I<FirebaseAuth>();
 

@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:tea_list/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:tea_list/features/auth/domain/entity/user_entity.dart';
-import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
 
 part 'registration_event.dart';
 part 'registration_state.dart';
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
-  final AuthRepository _authRepository;
+  final AuthRemoteDataSource _authRepository;
   FirebaseAuth auth = FirebaseAuth.instance;
 
   RegistrationBloc(this._authRepository) : super(RegistrationInitial()) {

@@ -1,17 +1,16 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
-import 'package:tea_list/features/runtime_ceremony/data/models/ceremony_model.dart';
 import 'package:tea_list/features/runtime_ceremony/domain/entities/spill_entity.dart';
+import 'package:tea_list/features/runtime_ceremony/domain/repository/runtime_ceremony_repository.dart';
 
 part 'ceremony_event.dart';
 part 'ceremony_state.dart';
 
 class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   List<SpillEntity> spills = [];
+  RuntimeCeremonyRepository runtimeCeremonyRepository;
 
-  CeremonyBloc() : super(CeremonyInitial([])) {
+  CeremonyBloc({required this.runtimeCeremonyRepository}) : super(CeremonyInitial([])) {
     on<OnClearedTeaCeremonyEvent>(_teaWasCleared);
     on<OnWarmedUpCeremonyEvent>(_dishesWasWarmed);
     on<StartSpillTimerEvent>(_startSpillTimer);
@@ -22,17 +21,7 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   }
 
   Future<void> _onSuccessFinish(SuccessFinishEvent event, Emitter<CeremonyState> emit) async {
-    final auth = FirebaseAuth.instance;
-    final instance = FirebaseFirestore.instance;
-
-    final user = auth.currentUser;
-
-    final ceremony = CeremonyModel(spills: spills);
-
-    await instance.collection("users").doc(user!.uid).update({
-      "ceremonies": FieldValue.arrayUnion([ceremony.toMap()]),
-    });
-
+    await runtimeCeremonyRepository.tryFinishCeremony(spills);
     emit(SuccessFinishState(spills));
   }
 
