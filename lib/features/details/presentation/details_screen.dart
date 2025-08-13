@@ -42,6 +42,7 @@ class DetailsScreen extends StatelessWidget {
             context: context,
             builder: (dialogContext) {
               return AreYouSureDialog(
+                title: "Вы уверены, что хотите удалить чай ${tea.title}?",
                 onNot: () => Navigator.of(dialogContext).pop(),
                 onYes: () {
                   context.read<DetailsBloc>().add(ISureDeleteEvent(tea: tea));

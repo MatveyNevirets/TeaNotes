@@ -21,8 +21,15 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   }
 
   Future<void> _onSuccessFinish(SuccessFinishEvent event, Emitter<CeremonyState> emit) async {
-    await runtimeCeremonyRepository.tryFinishCeremony(spills);
-    emit(SuccessFinishState(spills));
+    final result = await runtimeCeremonyRepository.tryFinishCeremony(spills);
+    result.fold(
+      (fail) {
+        //    emit();
+      },
+      (success) {
+        emit(SuccessFinishState(spills));
+      },
+    );
   }
 
   void _onFieldUpdated(UpdateSpillFieldEvent event, Emitter<CeremonyState> emit) {
@@ -31,6 +38,7 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
     final current = updatedSpills[event.index];
 
     updatedSpills[event.index] = updatedSpills[event.index].copyWith(
+      numberOfSpill: event.index,
       smellUnderLid: event.fieldName == 'smellUnderLid' ? event.value : current.smellUnderLid,
       smellFromGaiwan: event.fieldName == 'smellFromGaiwan' ? event.value : current.smellFromGaiwan,
       smellFromEmptyBowl: event.fieldName == 'smellFromEmptyBowl' ? event.value : current.smellFromEmptyBowl,

@@ -47,6 +47,14 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
     );
   }
 
+  void changeTab(BuildContext context, int index) {
+    setState(() {
+      context.read<CeremonyBloc>().add(TabChangedEvent(index: index, spills: spills));
+      log("change index $index");
+      currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CeremonyBloc, CeremonyState>(
@@ -68,10 +76,10 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                 context: context,
                 builder:
                     (dialogContext) => AreYouSureDialog(
+                      title: "Вы уверены, что хотите завершить чайную церемонию?",
                       onNot: () => Navigator.of(dialogContext).pop(),
                       onYes: () {
                         Navigator.of(dialogContext).pop();
-
                         context.read<CeremonyBloc>().add(SuccessFinishEvent());
                       },
                     ),
@@ -83,24 +91,25 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 BlocBuilder<CeremonyBloc, CeremonyState>(
-                  builder: (context, state) {
+                  builder: (builderContext, state) {
                     spills = state.spills;
 
                     if (state is StartCeremonyState) {
                       return _StartSpillTimerWidget(
-                        onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
+                        onClick: () => builderContext.read<CeremonyBloc>().add(StartSpillTimerEvent()),
                       );
                     } else if (state is SpillStartState) {
                       return _SpillTimerInProcessWidget(
-                        onClick: () => context.read<CeremonyBloc>().add(StopSpillTimerEvent()),
+                        onClick: () {
+                          builderContext.read<CeremonyBloc>().add(StopSpillTimerEvent());
+                          changeTab(context, spills!.length);
+                        },
                       );
-                    } else if (state is SpillStopState) {
+                    } else if (state is SpillStopState || state is ChangedSpillState) {
                       return _NextSpillTimerWidget(
-                        onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
-                      );
-                    } else if (state is ChangedSpillState) {
-                      return _NextSpillTimerWidget(
-                        onClick: () => context.read<CeremonyBloc>().add(StartSpillTimerEvent()),
+                        onClick: () {
+                          builderContext.read<CeremonyBloc>().add(StartSpillTimerEvent());
+                        },
                       );
                     }
                     return StylizedLoadingIndicator();
@@ -124,10 +133,7 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                   child: BlocBuilder<CeremonyBloc, CeremonyState>(
                     builder: (context, state) {
                       return TeaTabWidget(
-                        onTabChanged: (index) {
-                          setState(() => currentIndex = index);
-                          context.read<CeremonyBloc>().add(TabChangedEvent(index: index, spills: spills));
-                        },
+                        onTabChanged: (index) => changeTab(context, index),
                         children: List.generate(spills?.length ?? 0, (index) => "Пролив ${index + 1}"),
                       );
                     },
@@ -143,9 +149,22 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: BlocBuilder<CeremonyBloc, CeremonyState>(
                             builder: (context, state) {
-                              final currentSpill = state.spills[currentIndex];
                               log(state.runtimeType.toString());
-                              if (state is ChangedSpillState || state is SpillStopState || state is SpillStartState) {
+                              if (state.spills.isEmpty) {
+                                return SizedBox(
+                                  height: MediaQuery.of(context).size.height / 2.65,
+                                  child: Center(
+                                    child: Text(
+                                      "Приятного чаепития! :)",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context).textTheme.bodyLarge,
+                                    ),
+                                  ),
+                                );
+                              } else if (state is ChangedSpillState ||
+                                  state is SpillStopState ||
+                                  state is SpillStartState) {
+                                final currentSpill = state.spills[currentIndex];
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
 

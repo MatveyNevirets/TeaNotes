@@ -14,7 +14,9 @@ class RemoteFirebaseDatasource implements RemoteDatasource {
 
     final user = auth.currentUser;
 
-    final ceremony = CeremonyModel(spills: spills);
+    final dateString = "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}";
+
+    final ceremony = CeremonyModel(spills: spills, date: dateString);
 
     await instance.collection("users").doc(user!.uid).update({
       "ceremonies": FieldValue.arrayUnion([ceremony.toMap()]),

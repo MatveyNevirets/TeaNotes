@@ -3,10 +3,12 @@ import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/stylized_button.dart';
 
 class AreYouSureDialog extends StatelessWidget {
-  const AreYouSureDialog({super.key, required this.onNot, required this.onYes});
+  const AreYouSureDialog({super.key, required this.onNot, required this.onYes, required this.title});
 
   final VoidCallback onNot;
   final VoidCallback onYes;
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +18,7 @@ class AreYouSureDialog extends StatelessWidget {
         side: BorderSide(width: 5, color: AppColors.application3BaseColor),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      title: Text(
-        "Вы уверены, что хотите удалить?",
-        style: Theme.of(context).textTheme.bodyMedium,
-        textAlign: TextAlign.left,
-      ),
+      title: Text(title, style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
 
       actions: [
         Center(

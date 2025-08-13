@@ -2,6 +2,7 @@ import 'package:tea_list/features/runtime_ceremony/data/models/spill_model.dart'
 
 class SpillEntity extends SpillModel {
   SpillEntity({
+    super.numberOfSpill,
     super.smellUnderLid,
     super.smellFromGaiwan,
     super.smellFromEmptyBowl,
@@ -14,7 +15,7 @@ class SpillEntity extends SpillModel {
 
   @override
   SpillEntity copyWith({
-    int? spillNumber,
+    int? numberOfSpill,
     String? smellUnderLid,
     String? smellFromGaiwan,
     String? smellFromEmptyBowl,
@@ -25,14 +26,15 @@ class SpillEntity extends SpillModel {
     String? teaState,
   }) {
     return SpillEntity(
-      smellUnderLid: smellUnderLid ?? this.smellUnderLid,
-      smellFromGaiwan: smellFromGaiwan ?? this.smellFromGaiwan,
-      smellFromEmptyBowl: smellFromEmptyBowl ?? this.smellFromEmptyBowl,
-      smellFromEmptyChaHai: smellFromEmptyChaHai ?? this.smellFromEmptyChaHai,
-      colorOfTea: colorOfTea ?? this.colorOfTea,
-      tasteOfTea: tasteOfTea ?? this.tasteOfTea,
-      impressions: impressions ?? this.impressions,
-      teaState: teaState ?? this.teaState,
+      numberOfSpill: numberOfSpill ?? this.numberOfSpill,
+      smellUnderLid: smellUnderLid ?? smellUnderLid,
+      smellFromGaiwan: smellFromGaiwan ?? smellFromGaiwan,
+      smellFromEmptyBowl: smellFromEmptyBowl ?? smellFromEmptyBowl,
+      smellFromEmptyChaHai: smellFromEmptyChaHai ?? smellFromEmptyChaHai,
+      colorOfTea: colorOfTea ?? colorOfTea,
+      tasteOfTea: tasteOfTea ?? tasteOfTea,
+      impressions: impressions ?? impressions,
+      teaState: teaState ?? teaState,
     );
   }
 }

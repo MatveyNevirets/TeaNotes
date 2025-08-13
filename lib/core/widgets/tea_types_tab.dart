@@ -15,6 +15,13 @@ class TeaTabWidget extends StatefulWidget {
 class _TeaTabWidgetState extends State<TeaTabWidget> {
   int currentIndex = 0;
 
+  void changeTab(BuildContext context, int index) {
+    setState(() {
+      currentIndex = index;
+      widget.onTabChanged.call(currentIndex);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
