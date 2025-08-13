@@ -12,7 +12,10 @@ class StartSpillTimerEvent extends CeremonyEvent {}
 
 class StopSpillTimerEvent extends CeremonyEvent {}
 
-class SuccessFinishEvent extends CeremonyEvent {}
+class SuccessFinishEvent extends CeremonyEvent {
+  String? imagePath;
+  SuccessFinishEvent({required this.imagePath});
+}
 
 class TabChangedEvent extends CeremonyEvent {
   int index;

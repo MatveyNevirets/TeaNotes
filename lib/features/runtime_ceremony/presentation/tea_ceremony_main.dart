@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/core/widgets/loading_screen.dart';
 import 'package:tea_list/features/runtime_ceremony/presentation/bloc/ceremony_bloc.dart';
 import 'package:tea_list/features/runtime_ceremony/presentation/clear_tea_screen.dart';
@@ -7,7 +9,9 @@ import 'package:tea_list/features/runtime_ceremony/presentation/tea_ceremony_scr
 import 'package:tea_list/features/runtime_ceremony/presentation/warm_up_screen.dart';
 
 class TeaCeremonyMain extends StatelessWidget {
-  const TeaCeremonyMain({super.key});
+  const TeaCeremonyMain({super.key, required this.tea});
+
+  final TeaModel tea;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class TeaCeremonyMain extends StatelessWidget {
             state is SpillStartState ||
             state is SpillStopState ||
             state is ChangedSpillState) {
-          return TeaCeremonyScreen();
+          return TeaCeremonyScreen(tea: tea);
         }
 
         return LoadingScreen();

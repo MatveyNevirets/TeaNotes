@@ -63,7 +63,7 @@ class DetailsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: StylizedButton(
-                  onPressed: () => context.go("/main_page/tea_ceremony"),
+                  onPressed: () => context.go("/main_page/tea_ceremony", extra: tea),
                   text: "Начать церемонию",
                   fontSize: 16,
                   backgroundColor: AppColors.selectedItemColor,

@@ -1,20 +1,24 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tea_list/core/entities/spill_entity.dart';
+import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/are_you_sure_dialog.dart';
 import 'package:tea_list/core/widgets/base_snackbar.dart';
 import 'package:tea_list/core/widgets/stylized_loading_indicator.dart';
 import 'package:tea_list/core/widgets/stylized_text_field.dart';
 import 'package:tea_list/core/widgets/tea_types_tab.dart';
-import 'package:tea_list/features/runtime_ceremony/domain/entities/spill_entity.dart';
 import 'package:tea_list/features/runtime_ceremony/domain/timer/timer_tea_ceremony.dart';
 import 'package:tea_list/features/runtime_ceremony/presentation/bloc/ceremony_bloc.dart';
 
 class TeaCeremonyScreen extends StatefulWidget {
-  const TeaCeremonyScreen({super.key});
+  const TeaCeremonyScreen({super.key, required this.tea});
+
+  final TeaModel tea;
 
   @override
   State<TeaCeremonyScreen> createState() => _TeaCeremonyScreenState();
@@ -80,7 +84,7 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                       onNot: () => Navigator.of(dialogContext).pop(),
                       onYes: () {
                         Navigator.of(dialogContext).pop();
-                        context.read<CeremonyBloc>().add(SuccessFinishEvent());
+                        context.read<CeremonyBloc>().add(SuccessFinishEvent(imagePath: widget.tea.imagePath));
                       },
                     ),
               );

@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_gradient_container.dart';
 import 'package:tea_list/core/widgets/container_with_image.dart';
 import 'package:tea_list/core/widgets/stylized_loading_indicator.dart';
 import 'package:tea_list/core/widgets/stylized_text_field.dart';
 import 'package:tea_list/core/widgets/tea_types_tab.dart';
-import 'package:tea_list/features/create_new_tea/presentation/bloc/create_tea_bloc.dart';
-import 'package:tea_list/features/create_new_tea/presentation/create_new_tea_screen.dart';
-import 'package:tea_list/features/home/data/datasources/remote/home_remote_datasource.dart';
-import 'package:tea_list/features/home/data/repository/tea_list_repository_impl.dart';
 import 'package:tea_list/features/home/presentation/bloc/home_bloc.dart';
 import 'package:tea_list/features/home/presentation/create_tea_dialog_page.dart';
 import 'package:tea_list/features/home/widgets/tea_card_to_add.dart';

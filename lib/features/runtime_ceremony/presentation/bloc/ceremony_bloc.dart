@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:tea_list/features/runtime_ceremony/domain/entities/spill_entity.dart';
+import 'package:tea_list/core/entities/spill_entity.dart';
+import 'package:tea_list/core/models/ceremony_model.dart';
 import 'package:tea_list/features/runtime_ceremony/domain/repository/runtime_ceremony_repository.dart';
 
 part 'ceremony_event.dart';
@@ -21,7 +22,13 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   }
 
   Future<void> _onSuccessFinish(SuccessFinishEvent event, Emitter<CeremonyState> emit) async {
-    final result = await runtimeCeremonyRepository.tryFinishCeremony(spills);
+
+final imagePath = event.imagePath;
+final dateString = "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}";
+
+final ceremony = CeremonyModel(spills: spills, date: dateString, imagePath: imagePath);
+
+    final result = await runtimeCeremonyRepository.tryFinishCeremony(ceremony);
     result.fold(
       (fail) {
         //    emit();

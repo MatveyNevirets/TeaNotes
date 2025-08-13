@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:tea_list/core/models/tea_model.dart';
-import 'package:tea_list/features/runtime_ceremony/data/models/ceremony_model.dart';
+import 'package:tea_list/core/models/ceremony_model.dart';
 
 class UserModel {
   String? name;

@@ -46,14 +46,14 @@ final router = GoRouter(
             final homeContext = data[1] as BuildContext;
             return DetailsPage(tea: tea, homeContext: homeContext);
           },
-  
         ),
-            GoRoute(
-              path: '/tea_ceremony',
-              builder: (context, state) {
-                return CeremonyPage();
-              },
-            ),
+        GoRoute(
+          path: '/tea_ceremony',
+          builder: (context, state) {
+            final tea = state.extra as TeaModel;
+            return CeremonyPage(tea: tea);
+          },
+        ),
         GoRoute(
           path: "/tea_posts",
           routes: [
