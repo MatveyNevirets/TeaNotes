@@ -112,7 +112,7 @@ class HomeScreen extends StatelessWidget {
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               if (state is HasDataState) {
-                return SliverTeasGrid(state: state);
+                return _SliverTeasGrid(state: state);
               } else if (state is HomeInitial) {
                 searchTea();
               } else if (state is ErrorState) {
@@ -128,9 +128,8 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// Moved to clean up code
-class SliverTeasGrid extends StatelessWidget {
-  const SliverTeasGrid({super.key, required this.state});
+class _SliverTeasGrid extends StatelessWidget {
+  const _SliverTeasGrid({super.key, required this.state});
   final HasDataState state;
 
   @override

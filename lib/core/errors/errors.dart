@@ -39,3 +39,7 @@ class UserIsNullException extends Failure {
 class FetchTeaPostsException extends Failure {
   FetchTeaPostsException(super.error, super.stack);
 }
+
+class FetchFavoriteTeaException extends Failure {
+  FetchFavoriteTeaException(super.error, super.stack);
+}

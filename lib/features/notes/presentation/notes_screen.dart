@@ -25,22 +25,25 @@ class NotesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: FutureBuilder(
-          future: getCountsOfCeremonies(),
-          builder: (context, snapshots) {
-            if (snapshots.hasData) {
-              return GridView.builder(
-                itemCount: snapshots.data!.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  return NoteWidget(ceremony: snapshots.data![index], index: index);
-                },
-              );
-            } else {
-              return Container();
-            }
-          },
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+        child: Center(
+          child: FutureBuilder(
+            future: getCountsOfCeremonies(),
+            builder: (context, snapshots) {
+              if (snapshots.hasData) {
+                return GridView.builder(
+                  itemCount: snapshots.data!.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                  itemBuilder: (context, index) {
+                    return NoteWidget(ceremony: snapshots.data![index], index: index);
+                  },
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
         ),
       ),
     );

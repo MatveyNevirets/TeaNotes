@@ -7,6 +7,10 @@ import 'package:tea_list/features/auth/data/datasources/auth_remote_datasource.d
 import 'package:tea_list/features/auth/data/datasources/firebase_auth_remote_datasource.dart';
 import 'package:tea_list/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:tea_list/features/auth/domain/repository/auth_repository.dart';
+import 'package:tea_list/features/favorite/data/datasources/remote/favorite_datasource.dart';
+import 'package:tea_list/features/favorite/data/datasources/remote/remote_firebase_favorite_datasource.dart';
+import 'package:tea_list/features/favorite/data/repository/favorite_repository_impl.dart';
+import 'package:tea_list/features/favorite/domain/favorite_repository.dart';
 import 'package:tea_list/features/home/data/datasources/local/home_local_datasource.dart';
 import 'package:tea_list/features/home/data/datasources/local/home_sqlflite_local_datasource.dart';
 import 'package:tea_list/features/home/data/datasources/remote/home_firebase_remote_data_source.dart';
@@ -30,6 +34,8 @@ enum Depends {
   teaListRepository,
   teaPostsRemoteDataSource,
   teaPostsRepository,
+  favoriteRemoteDataSource,
+  favoriteRepository,
 }
 
 typedef OnProccess = Function(String name, int time);
@@ -258,6 +264,53 @@ class AppDepends {
         teaPostsRepository = TeaPostsRepositoryImpl(postsRemoteDatasource: getIt<PostsRemoteDatasource>());
 
         return teaPostsRepository;
+      });
+
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[9].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[9].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
+
+      // Here we register application's remote favorite datasource
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final RemoteFavoriteDataSource remoteFavoriteDataSource;
+
+        // Here we setup datasource's implementation
+        remoteFavoriteDataSource = RemoteFirebaseFavoriteDatasource(
+          firebaseAuth: getIt<FirebaseAuth>(),
+          firestore: getIt<FirebaseFirestore>(),
+        );
+
+        return remoteFavoriteDataSource;
+      });
+
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[10].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[10].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
+
+      // Here we register application's favorite repository
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final FavoriteRepository favoriteRepository;
+
+        // Here we setup repository's implementation
+        favoriteRepository = FavoriteRepositoryImpl(remoteDatasource: getIt<RemoteFavoriteDataSource>());
+
+        return favoriteRepository;
       });
 
       timer.stop();

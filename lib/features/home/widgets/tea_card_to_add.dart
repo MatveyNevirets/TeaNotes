@@ -9,7 +9,7 @@ class TeaCardToAdd extends StatefulWidget {
   const TeaCardToAdd({super.key, required this.tea, required this.onFavoriteChanged});
 
   final TeaModel tea;
-  final Function(bool isFavorite) onFavoriteChanged;
+  final Function(bool isFavorite)? onFavoriteChanged;
 
   @override
   State<TeaCardToAdd> createState() => _TeaCardToAddState();
@@ -47,37 +47,41 @@ class _TeaCardToAddState extends State<TeaCardToAdd> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                    color:
-                        widget.tea.isFavorite ? const Color.fromARGB(160, 249, 204, 201) : Colors.white.withAlpha(160),
-                    borderRadius: BorderRadius.circular(16),
-                    border: BoxBorder.all(width: 2, color: Colors.black),
-                  ),
-                  child: Center(
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          widget.tea.isFavorite = !widget.tea.isFavorite;
-                          widget.onFavoriteChanged.call(widget.tea.isFavorite);
-                        });
-                      },
-                      icon: Icon(
-                        color: widget.tea.isFavorite ? Colors.red : Colors.black,
-                        size: 25,
-                        widget.tea.isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+            widget.onFavoriteChanged == null
+                ? Container()
+                : Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                        color:
+                            widget.tea.isFavorite
+                                ? const Color.fromARGB(160, 249, 204, 201)
+                                : Colors.white.withAlpha(160),
+                        borderRadius: BorderRadius.circular(16),
+                        border: BoxBorder.all(width: 2, color: Colors.black),
+                      ),
+                      child: Center(
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              widget.tea.isFavorite = !widget.tea.isFavorite;
+                              widget.onFavoriteChanged!.call(widget.tea.isFavorite);
+                            });
+                          },
+                          icon: Icon(
+                            color: widget.tea.isFavorite ? Colors.red : Colors.black,
+                            size: 25,
+                            widget.tea.isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
             Positioned(
               child: Align(
                 alignment: Alignment.bottomCenter,
