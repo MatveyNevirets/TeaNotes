@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tea_list/core/entities/spill_entity.dart';
+import 'package:tea_list/core/models/spill_model.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/are_you_sure_dialog.dart';
@@ -16,40 +17,20 @@ import 'package:tea_list/features/runtime_ceremony/domain/timer/timer_tea_ceremo
 import 'package:tea_list/features/runtime_ceremony/presentation/bloc/ceremony_bloc.dart';
 
 class TeaCeremonyScreen extends StatefulWidget {
-  const TeaCeremonyScreen({super.key, required this.tea});
+  TeaCeremonyScreen({super.key, required this.tea});
 
   final TeaModel tea;
+  String? smellOfDryLeavesText;
 
   @override
   State<TeaCeremonyScreen> createState() => _TeaCeremonyScreenState();
 }
 
 class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
+  final _smellOfDryLeavesController = TextEditingController();
   List<SpillEntity>? spills;
 
   int currentIndex = 0;
-
-  Widget _buildTextField(
-    BuildContext context, {
-    required String label,
-    required String fieldName,
-    String? initialValue,
-  }) {
-    return StylizedTextField(
-      borderWidth: 4,
-      borderRadius: 16,
-      fontSize: 21,
-      isOutline: true,
-      lableText: label,
-      controller: TextEditingController(text: initialValue ?? "")
-        ..selection = TextSelection.fromPosition(TextPosition(offset: (initialValue ?? "").length)),
-      onChanged: (value) {
-        context.read<CeremonyBloc>().add(
-          UpdateSpillFieldEvent(index: currentIndex, fieldName: fieldName, value: value),
-        );
-      },
-    );
-  }
 
   void changeTab(BuildContext context, int index) {
     setState(() {
@@ -83,8 +64,14 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                       title: "Вы уверены, что хотите завершить чайную церемонию?",
                       onNot: () => Navigator.of(dialogContext).pop(),
                       onYes: () {
+                        widget.smellOfDryLeavesText = _smellOfDryLeavesController.text;
                         Navigator.of(dialogContext).pop();
-                        context.read<CeremonyBloc>().add(SuccessFinishEvent(imagePath: widget.tea.imagePath));
+                        context.read<CeremonyBloc>().add(
+                          SuccessFinishEvent(
+                            imagePath: widget.tea.imagePath,
+                            smellOfDryLeaves: widget.smellOfDryLeavesText,
+                          ),
+                        );
                       },
                     ),
               );
@@ -97,7 +84,6 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                 BlocBuilder<CeremonyBloc, CeremonyState>(
                   builder: (builderContext, state) {
                     spills = state.spills;
-
                     if (state is StartCeremonyState) {
                       return _StartSpillTimerWidget(
                         onClick: () => builderContext.read<CeremonyBloc>().add(StartSpillTimerEvent()),
@@ -158,10 +144,32 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                                 return SizedBox(
                                   height: MediaQuery.of(context).size.height / 2.65,
                                   child: Center(
-                                    child: Text(
-                                      "Приятного чаепития! :)",
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context).textTheme.bodyLarge,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 20),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text("Аромат", style: Theme.of(context).textTheme.bodyLarge),
+                                        ),
+                                        SizedBox(height: 25),
+                                        StylizedTextField(
+                                          onChanged: (value) {
+                                            log(widget.smellOfDryLeavesText.toString());
+                                            widget.smellOfDryLeavesText = value;
+                                            log(widget.smellOfDryLeavesText.toString());
+                                          },
+                                          borderWidth: 4,
+                                          borderRadius: 16,
+                                          fontSize: 21,
+                                          isOutline: true,
+                                          lableText: "Сухого листа из Ча Хэ",
+                                          controller:
+                                              _smellOfDryLeavesController
+                                                ..selection = TextSelection.fromPosition(
+                                                  TextPosition(offset: ("").length),
+                                                ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
@@ -169,85 +177,7 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                                   state is SpillStopState ||
                                   state is SpillStartState) {
                                 final currentSpill = state.spills[currentIndex];
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-
-                                  children: [
-                                    SizedBox(height: 20),
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Text("Аромат", style: Theme.of(context).textTheme.bodyLarge),
-                                    ),
-                                    SizedBox(height: 25),
-                                    _buildTextField(
-                                      context,
-                                      label: "Из под крышки гайвани",
-                                      fieldName: "smellUnderLid",
-                                      initialValue: currentSpill.smellUnderLid,
-                                    ),
-                                    const SizedBox(height: 20),
-                                    _buildTextField(
-                                      context,
-                                      label: "Из гайвани",
-                                      fieldName: "smellFromGaiwan",
-                                      initialValue: currentSpill.smellFromGaiwan,
-                                    ),
-                                    const SizedBox(height: 20),
-                                    _buildTextField(
-                                      context,
-                                      label: "Из пустой пиалы",
-                                      fieldName: "smellFromEmptyBowl",
-                                      initialValue: currentSpill.smellFromEmptyBowl,
-                                    ),
-                                    const SizedBox(height: 20),
-                                    _buildTextField(
-                                      context,
-                                      label: "Из пустого Ча Хай",
-                                      fieldName: "smellFromEmptyChaHai",
-                                      initialValue: currentSpill.smellFromEmptyChaHai,
-                                    ),
-
-                                    SizedBox(height: 30),
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Text("Пролив", style: Theme.of(context).textTheme.bodyLarge),
-                                    ),
-                                    SizedBox(height: 25),
-                                    _buildTextField(
-                                      context,
-                                      label: "Цвет",
-                                      fieldName: "colorOfTea",
-                                      initialValue: currentSpill.colorOfTea,
-                                    ),
-                                    const SizedBox(height: 20),
-                                    _buildTextField(
-                                      context,
-                                      label: "Вкус",
-                                      fieldName: "tasteOfTea",
-                                      initialValue: currentSpill.tasteOfTea,
-                                    ),
-                                    SizedBox(height: 30),
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Text("Прочее", style: Theme.of(context).textTheme.bodyLarge),
-                                    ),
-                                    SizedBox(height: 25),
-                                    _buildTextField(
-                                      context,
-                                      label: "Общие впечатления",
-                                      fieldName: "impressions",
-                                      initialValue: currentSpill.impressions,
-                                    ),
-                                    const SizedBox(height: 25),
-                                    _buildTextField(
-                                      context,
-                                      label: "Состояние",
-                                      fieldName: "teaState",
-                                      initialValue: currentSpill.teaState,
-                                    ),
-                                    SizedBox(height: 40),
-                                  ],
-                                );
+                                return _BuildFieldsWidget(currentSpill: currentSpill, currentIndex: currentIndex);
                               }
                               return Container();
                             },
@@ -262,6 +192,92 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class _BuildFieldsWidget extends StatelessWidget {
+  final SpillModel currentSpill;
+  final int currentIndex;
+
+  const _BuildFieldsWidget({super.key, required this.currentSpill, required this.currentIndex});
+
+  Widget _buildTextField(
+    BuildContext context, {
+    required String label,
+    required String fieldName,
+    String? initialValue,
+  }) {
+    return StylizedTextField(
+      borderWidth: 4,
+      borderRadius: 16,
+      fontSize: 21,
+      isOutline: true,
+      lableText: label,
+      controller: TextEditingController(text: initialValue ?? "")
+        ..selection = TextSelection.fromPosition(TextPosition(offset: (initialValue ?? "").length)),
+      onChanged: (value) {
+        context.read<CeremonyBloc>().add(
+          UpdateSpillFieldEvent(index: currentIndex, fieldName: fieldName, value: value),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 20),
+        Align(alignment: Alignment.topLeft, child: Text("Аромат", style: Theme.of(context).textTheme.bodyLarge)),
+        SizedBox(height: 25),
+        _buildTextField(
+          context,
+          label: "Из под крышки гайвани",
+          fieldName: "smellUnderLid",
+          initialValue: currentSpill.smellUnderLid,
+        ),
+        const SizedBox(height: 20),
+        _buildTextField(
+          context,
+          label: "Из гайвани",
+          fieldName: "smellFromGaiwan",
+          initialValue: currentSpill.smellFromGaiwan,
+        ),
+        const SizedBox(height: 20),
+        _buildTextField(
+          context,
+          label: "Из пустой пиалы",
+          fieldName: "smellFromEmptyBowl",
+          initialValue: currentSpill.smellFromEmptyBowl,
+        ),
+        const SizedBox(height: 20),
+        _buildTextField(
+          context,
+          label: "Из пустого Ча Хай",
+          fieldName: "smellFromEmptyChaHai",
+          initialValue: currentSpill.smellFromEmptyChaHai,
+        ),
+
+        SizedBox(height: 30),
+        Align(alignment: Alignment.topLeft, child: Text("Пролив", style: Theme.of(context).textTheme.bodyLarge)),
+        SizedBox(height: 25),
+        _buildTextField(context, label: "Цвет", fieldName: "colorOfTea", initialValue: currentSpill.colorOfTea),
+        const SizedBox(height: 20),
+        _buildTextField(context, label: "Вкус", fieldName: "tasteOfTea", initialValue: currentSpill.tasteOfTea),
+        SizedBox(height: 30),
+        Align(alignment: Alignment.topLeft, child: Text("Прочее", style: Theme.of(context).textTheme.bodyLarge)),
+        SizedBox(height: 25),
+        _buildTextField(
+          context,
+          label: "Общие впечатления",
+          fieldName: "impressions",
+          initialValue: currentSpill.impressions,
+        ),
+        const SizedBox(height: 25),
+        _buildTextField(context, label: "Состояние", fieldName: "teaState", initialValue: currentSpill.teaState),
+        SizedBox(height: 40),
+      ],
     );
   }
 }

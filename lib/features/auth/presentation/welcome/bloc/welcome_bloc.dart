@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
@@ -20,6 +22,7 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     try {
       // Here we fetch user
       final user = firebaseAuth.currentUser;
+      log(user.toString());
 
       // Then if that one not null
       if (user != null) {

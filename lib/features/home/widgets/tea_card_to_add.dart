@@ -5,16 +5,22 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 
-class TeaCardToAdd extends StatelessWidget {
-  const TeaCardToAdd({super.key, required this.tea});
+class TeaCardToAdd extends StatefulWidget {
+  const TeaCardToAdd({super.key, required this.tea, required this.onFavoriteChanged});
 
   final TeaModel tea;
+  final Function(bool isFavorite) onFavoriteChanged;
 
   @override
+  State<TeaCardToAdd> createState() => _TeaCardToAddState();
+}
+
+class _TeaCardToAddState extends State<TeaCardToAdd> {
+  @override
   Widget build(BuildContext context) {
-    log(tea.imagePath);
+    log(widget.tea.imagePath);
     return GestureDetector(
-      onTap: () => context.go("/main_page/details", extra: [tea, context]),
+      onTap: () => context.go("/main_page/details", extra: [widget.tea, context]),
       child: Container(
         margin: EdgeInsets.all(8),
         child: Stack(
@@ -25,10 +31,10 @@ class TeaCardToAdd extends StatelessWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image:
-                        tea.imagePath.substring(0, 6) == "assets"
-                            ? AssetImage(tea.imagePath)
+                        widget.tea.imagePath.substring(0, 6) == "assets"
+                            ? AssetImage(widget.tea.imagePath)
                             : ResizeImage(
-                              FileImage(File(tea.imagePath)),
+                              FileImage(File(widget.tea.imagePath)),
                               width:
                                   (MediaQuery.of(context).size.width /
                                           2 *
@@ -38,6 +44,37 @@ class TeaCardToAdd extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  height: 45,
+                  width: 45,
+                  decoration: BoxDecoration(
+                    color:
+                        widget.tea.isFavorite ? const Color.fromARGB(160, 249, 204, 201) : Colors.white.withAlpha(160),
+                    borderRadius: BorderRadius.circular(16),
+                    border: BoxBorder.all(width: 2, color: Colors.black),
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          widget.tea.isFavorite = !widget.tea.isFavorite;
+                          widget.onFavoriteChanged.call(widget.tea.isFavorite);
+                        });
+                      },
+                      icon: Icon(
+                        color: widget.tea.isFavorite ? Colors.red : Colors.black,
+                        size: 25,
+                        widget.tea.isFavorite ? Icons.favorite : Icons.favorite_border_outlined,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -65,7 +102,7 @@ class TeaCardToAdd extends StatelessWidget {
               child: Builder(
                 builder: (context) {
                   final text = Text(
-                    tea.title,
+                    widget.tea.title,
                     style: const TextStyle(color: Colors.white, fontFamily: 'Coiny', fontSize: 16),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -74,7 +111,7 @@ class TeaCardToAdd extends StatelessWidget {
                   final renderObject = context.findRenderObject() as RenderBox?;
                   if (renderObject != null) {
                     final layout = TextPainter(
-                      text: TextSpan(text: tea.title, style: const TextStyle(fontFamily: 'Coiny', fontSize: 16)),
+                      text: TextSpan(text: widget.tea.title, style: const TextStyle(fontFamily: 'Coiny', fontSize: 16)),
                       textDirection: TextDirection.ltr,
                       maxLines: 2,
                     );
@@ -83,7 +120,7 @@ class TeaCardToAdd extends StatelessWidget {
 
                     if (layout.didExceedMaxLines) {
                       return Text(
-                        tea.title,
+                        widget.tea.title,
                         style: const TextStyle(color: Colors.white, fontFamily: 'Coiny', fontSize: 14),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

@@ -26,4 +26,14 @@ class TeaListRepositoryImpl implements TeaListRepository {
       return Left(DatabaseInsertException(error, stack));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> changeTeaFavoriteStatus(bool isFavorite, int index) async {
+    try {
+      await remoteDataSource.changeFavoriteTeaStatus(isFavorite, index);
+      return Right("Успешно!");
+    } on Object catch (error, stack) {
+      return Left(DatabaseInsertException(error, stack));
+    }
+  }
 }

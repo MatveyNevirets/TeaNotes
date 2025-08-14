@@ -13,6 +13,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc({required this.teaListRepository}) : super(HomeInitial()) {
     on<FetchDataEvent>(_fetchTeaList);
+    on<OnFavoriteChangedEvent>(_changeFavoriteTeaStatus);
+  }
+
+  Future<void> _changeFavoriteTeaStatus(OnFavoriteChangedEvent event, Emitter<HomeState> emit) async {
+    try {
+       await teaListRepository.changeTeaFavoriteStatus(event.isFavorite, event.changedTeaIndex);
+    } on Object catch (error, stack) {
+      throw Exception("Error in HomeBloc at method changeFavoriteTeaStatus: $error StackTrace: $stack");
+    }
   }
 
   Future<void> _fetchTeaList(HomeEvent event, Emitter<HomeState> emit) async {

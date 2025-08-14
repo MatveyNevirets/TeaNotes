@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:tea_list/core/entities/spill_entity.dart';
@@ -22,11 +24,17 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   }
 
   Future<void> _onSuccessFinish(SuccessFinishEvent event, Emitter<CeremonyState> emit) async {
+    final imagePath = event.imagePath;
+    final dateString = "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}";
 
-final imagePath = event.imagePath;
-final dateString = "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}";
+    log(event.smellOfDryLeaves.toString());
 
-final ceremony = CeremonyModel(spills: spills, date: dateString, imagePath: imagePath);
+    final ceremony = CeremonyModel(
+      spills: spills,
+      date: dateString,
+      imagePath: imagePath,
+      smellOfDryLeaves: event.smellOfDryLeaves,
+    );
 
     final result = await runtimeCeremonyRepository.tryFinishCeremony(ceremony);
     result.fold(

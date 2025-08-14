@@ -7,6 +7,7 @@ class TeaApplication extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textColor = Colors.black.withAlpha(190);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: router,
@@ -19,9 +20,15 @@ class TeaApplication extends StatelessWidget {
           selectionHandleColor: AppColors.selectedItemColor,
         ),
         textTheme: TextTheme(
-          bodyLarge: TextStyle(fontSize: 30, fontFamily: 'Coiny', fontWeight: FontWeight.w400, height: 0.9),
-          bodyMedium: TextStyle(fontSize: 24, fontFamily: 'Coiny', height: 0.9),
-          bodySmall: TextStyle(fontSize: 14, fontFamily: 'Coiny', height: 0.9),
+          bodyLarge: TextStyle(
+            fontSize: 30,
+            fontFamily: 'Coiny',
+            fontWeight: FontWeight.w400,
+            height: 0.9,
+            color: textColor,
+          ),
+          bodyMedium: TextStyle(fontSize: 24, fontFamily: 'Coiny', height: 0.9, color: textColor),
+          bodySmall: TextStyle(fontSize: 14, fontFamily: 'Coiny', height: 0.9, color: textColor),
         ),
       ),
     );

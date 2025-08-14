@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tea_list/core/models/ceremony_model.dart';
 
 class NoteWidget extends StatelessWidget {
@@ -13,6 +14,7 @@ class NoteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () => context.go("/main_page/notes_details/", extra: [ceremony, index] as List<dynamic>),
       child: Container(
         margin: EdgeInsets.all(8),
         child: Stack(
@@ -64,7 +66,7 @@ class NoteWidget extends StatelessWidget {
               child: Builder(
                 builder: (context) {
                   final text = Text(
-                    "Церемония $index\n\n${ceremony.date!}",
+                    "Церемония ${index + 1}\n\n${ceremony.date!}",
                     style: const TextStyle(color: Colors.white, fontFamily: 'Coiny', fontSize: 16),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -74,7 +76,7 @@ class NoteWidget extends StatelessWidget {
                   if (renderObject != null) {
                     final layout = TextPainter(
                       text: TextSpan(
-                        text: "Церемония $index\n\n${ceremony.date!}",
+                        text: "Церемония ${index + 1}\n\n${ceremony.date!}",
                         style: const TextStyle(fontFamily: 'Coiny', fontSize: 16),
                       ),
                       textDirection: TextDirection.ltr,
@@ -85,7 +87,7 @@ class NoteWidget extends StatelessWidget {
 
                     if (layout.didExceedMaxLines) {
                       return Text(
-                        "Церемония $index\n\n${ceremony.date!}",
+                        "Церемония ${index + 1}\n\n${ceremony.date!}",
                         style: const TextStyle(color: Colors.white, fontFamily: 'Coiny', fontSize: 14),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,

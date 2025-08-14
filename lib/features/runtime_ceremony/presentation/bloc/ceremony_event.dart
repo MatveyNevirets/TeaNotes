@@ -14,7 +14,8 @@ class StopSpillTimerEvent extends CeremonyEvent {}
 
 class SuccessFinishEvent extends CeremonyEvent {
   String? imagePath;
-  SuccessFinishEvent({required this.imagePath});
+  String? smellOfDryLeaves;
+  SuccessFinishEvent({required this.imagePath, required smellOfDryLeaves});
 }
 
 class TabChangedEvent extends CeremonyEvent {

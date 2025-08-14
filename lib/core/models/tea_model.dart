@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 class TeaModel {
@@ -17,6 +15,8 @@ class TeaModel {
   int gatheringYear;
   String gatheringPlace;
 
+  bool isFavorite;
+
   TeaModel({
     required this.title,
     required this.description,
@@ -28,6 +28,7 @@ class TeaModel {
     required this.countOfSpills,
     required this.gatheringYear,
     required this.gatheringPlace,
+    this.isFavorite = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -42,6 +43,7 @@ class TeaModel {
       'countOfSpills': countOfSpills,
       'gatheringYear': gatheringYear,
       'gatheringPlace': gatheringPlace,
+      'isFavorite': isFavorite,
     };
   }
 
@@ -57,10 +59,7 @@ class TeaModel {
       countOfSpills: map['countOfSpills'] as int,
       gatheringYear: map['gatheringYear'] as int,
       gatheringPlace: map['gatheringPlace'] as String,
+      isFavorite: map['isFavorite'] as bool,
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory TeaModel.fromJson(String source) => TeaModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

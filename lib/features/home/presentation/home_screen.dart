@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
@@ -19,7 +21,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void addNewTea() {
-
       showDialog(
         context: context,
         builder: (dialogContext) {
@@ -115,8 +116,8 @@ class HomeScreen extends StatelessWidget {
               } else if (state is HomeInitial) {
                 searchTea();
               } else if (state is ErrorState) {
-                searchTea();
-                return SliverToBoxAdapter(child: Text("BLoC error in presentation layer: ${state.error}"));
+                log(state.error);
+                return SliverToBoxAdapter(child: Center(child: Text("Что-то пошло не так :(")));
               }
               return SliverToBoxAdapter(child: StylizedLoadingIndicator());
             },
@@ -127,7 +128,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-
 // Moved to clean up code
 class SliverTeasGrid extends StatelessWidget {
   const SliverTeasGrid({super.key, required this.state});
@@ -137,7 +137,13 @@ class SliverTeasGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate((context, index) {
-        return Center(child: TeaCardToAdd(tea: state.teaList[index]));
+        return Center(
+          child: TeaCardToAdd(
+            tea: state.teaList[index],
+            onFavoriteChanged:
+                (bool isFavorite) => context.read<HomeBloc>().add(OnFavoriteChangedEvent(isFavorite, index)),
+          ),
+        );
       }, childCount: state.teaList.length),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

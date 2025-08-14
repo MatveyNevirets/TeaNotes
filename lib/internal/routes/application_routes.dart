@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tea_list/core/models/ceremony_model.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/features/auth/presentation/login/login_page.dart';
 import 'package:tea_list/features/auth/presentation/registration/registration_page.dart';
 import 'package:tea_list/features/auth/presentation/welcome/welcome_page.dart';
 import 'package:tea_list/features/details/presentation/details_page.dart';
 import 'package:tea_list/features/main_page/main_page.dart';
+import 'package:tea_list/features/notes_details/presentation/notes_details_screen.dart';
 import 'package:tea_list/features/runtime_ceremony/presentation/ceremony_page.dart';
 import 'package:tea_list/features/tea_post_details/presentation/tea_post_details.dart';
 import 'package:tea_list/features/tea_posts/domain/entity/tea_post_entity.dart';
@@ -52,6 +54,15 @@ final router = GoRouter(
           builder: (context, state) {
             final tea = state.extra as TeaModel;
             return CeremonyPage(tea: tea);
+          },
+        ),
+        GoRoute(
+          path: "/notes_details",
+          builder: (context, state) {
+            final data = state.extra as List<dynamic>;
+            final ceremony = data[0] as CeremonyModel;
+            final ceremonyIndex = data[1] as int;
+            return NotesDetailsScreen(ceremony: ceremony, index: ceremonyIndex);
           },
         ),
         GoRoute(
