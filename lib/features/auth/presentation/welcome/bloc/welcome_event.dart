@@ -4,3 +4,5 @@ part of 'welcome_bloc.dart';
 sealed class WelcomeEvent {}
 
 class TryGoogleSignInEvent extends WelcomeEvent {}
+
+class CheckUserLoginEvent extends WelcomeEvent {}

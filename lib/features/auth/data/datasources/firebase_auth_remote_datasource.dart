@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,6 +34,7 @@ class FirebaseAuthRemoteDatasource implements AuthRemoteDataSource {
       if (currentUser != null && !currentUser.emailVerified) {
         return Left(EmailLoginNotVerifedException(null, null));
       }
+
 
       // If well done we go HomeScreen and shows snackbar
       return Right("Приятных чаепитий!");

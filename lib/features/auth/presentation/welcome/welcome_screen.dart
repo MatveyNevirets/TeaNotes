@@ -22,7 +22,9 @@ class WelcomeScreen extends StatelessWidget {
               showSnackBar(context, state.message);
             } else if (state is WelcomeSuccessSignInState) {
               goTo(context, "/main_page");
-              showSnackBar(context, state.message);
+              if (state.message != null) {
+                showSnackBar(context, state.message!);
+              }
             }
           },
           builder: (context, state) {

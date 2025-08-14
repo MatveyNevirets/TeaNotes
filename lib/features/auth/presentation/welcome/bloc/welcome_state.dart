@@ -9,8 +9,8 @@ final class WelcomeInitial extends WelcomeState {}
 class WelcomeLoading extends WelcomeState {}
 
 class WelcomeSuccessSignInState extends WelcomeState {
-  String message;
-  WelcomeSuccessSignInState({required this.message});
+  String? message;
+  WelcomeSuccessSignInState({this.message});
 }
 
 class WelcomeErrorState extends WelcomeState {
