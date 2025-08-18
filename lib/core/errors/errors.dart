@@ -43,3 +43,7 @@ class FetchTeaPostsException extends Failure {
 class FetchFavoriteTeaException extends Failure {
   FetchFavoriteTeaException(super.error, super.stack);
 }
+
+class FetchNotesException extends Failure {
+  FetchNotesException(super.error, super.stack);
+}

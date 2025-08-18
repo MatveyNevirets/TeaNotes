@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/features/runtime_ceremony/data/datasources/remote/remote_datasource.dart';
 import 'package:tea_list/core/models/ceremony_model.dart';
-import 'package:tea_list/core/models/spill_model.dart';
 
 class RemoteFirebaseDatasource implements RemoteDatasource {
   @override

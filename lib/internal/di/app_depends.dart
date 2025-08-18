@@ -17,6 +17,10 @@ import 'package:tea_list/features/home/data/datasources/remote/home_firebase_rem
 import 'package:tea_list/features/home/data/datasources/remote/home_remote_datasource.dart';
 import 'package:tea_list/features/home/data/repository/tea_list_repository_impl.dart';
 import 'package:tea_list/features/home/domain/repository/tea_list_repository.dart';
+import 'package:tea_list/features/notes/data/datasources/remote/notes_firebase_remote_datasource.dart';
+import 'package:tea_list/features/notes/data/datasources/remote/notes_remote_datasource.dart';
+import 'package:tea_list/features/notes/data/repository/notes_repository_impl.dart';
+import 'package:tea_list/features/notes/domain/repository/notes_repository.dart';
 import 'package:tea_list/features/tea_posts/data/datasources/remote/posts_firebase_remote_datasource.dart';
 import 'package:tea_list/features/tea_posts/data/datasources/remote/posts_remote_datasource.dart';
 import 'package:tea_list/features/tea_posts/data/repository/tea_posts_repository_impl.dart';
@@ -36,6 +40,8 @@ enum Depends {
   teaPostsRepository,
   favoriteRemoteDataSource,
   favoriteRepository,
+  notesRemoteDatasource,
+  notesRepository,
 }
 
 typedef OnProccess = Function(String name, int time);
@@ -319,6 +325,53 @@ class AppDepends {
     } on Object catch (error, stack) {
       // Reports about failure
       onError.call(Depends.values[9].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
+
+      // Here we register application's notes remote datasource
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final NotesRemoteDatasource notesRemoteDatasource;
+
+        // Here we setup datasource's implementation
+        notesRemoteDatasource = NotesFirebaseRemoteDatasource(
+          firestore: getIt<FirebaseFirestore>(),
+          firebaseAuth: getIt<FirebaseAuth>(),
+        );
+
+        return notesRemoteDatasource;
+      });
+
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[10].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[10].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
+
+      // Here we register application's favorite repository
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final NotesRepository notesRepository;
+
+        // Here we setup repository's implementation
+        notesRepository = NotesRepositoryImpl(notesRemoteDatasource: getIt<NotesRemoteDatasource>());
+
+        return notesRepository;
+      });
+
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[11].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[11].name, error, stack);
     }
   }
 }

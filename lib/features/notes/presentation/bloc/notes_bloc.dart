@@ -1,29 +1,35 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:tea_list/core/models/ceremony_model.dart';
-import 'package:tea_list/features/auth/data/models/user_model.dart';
+import 'package:tea_list/features/notes/domain/repository/notes_repository.dart';
 
 part 'notes_event.dart';
 part 'notes_state.dart';
 
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
-  final FirebaseFirestore firestore;
-  final FirebaseAuth firebaseAuth;
+  final NotesRepository notesRepository;
 
-  NotesBloc({required this.firestore, required this.firebaseAuth}) : super(NotesInitial()) {
+  NotesBloc(this.notesRepository) : super(NotesInitial()) {
     on<FetchNotesEvent>(_fetchNotes);
   }
 
   Future<void> _fetchNotes(FetchNotesEvent event, Emitter<NotesState> emit) async {
-    final uid = firebaseAuth.currentUser!.uid;
-    final docs = await firestore.collection("users").doc(uid).get();
+    try {
+      final result = await notesRepository.fetchUserCeremonies();
 
-    final user = UserModel.fromMap(docs.data()!);
-
-    final ceremonies = user.ceremonies;
-
-    emit(SuccessFetchedNotesState(ceremonies: ceremonies));
+      result.fold(
+        (fail) {
+          log("Error with type ${fail.runtimeType.toString()} : ${fail.error} StackTrace: ${fail.stack}");
+          emit(ErrorFetchedNotesState());
+        },
+        (success) {
+          emit(SuccessFetchedNotesState(ceremonies: success));
+        },
+      );
+    } on Object catch (error, stack) {
+      throw Exception("Error into NotesBloc $error StackTrace: $stack");
+    }
   }
 }

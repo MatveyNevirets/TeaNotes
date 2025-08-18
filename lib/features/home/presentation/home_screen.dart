@@ -48,6 +48,18 @@ class HomeScreen extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
+            expandedHeight: 5,
+            toolbarHeight: 5,
+            backgroundColor: Colors.black,
+            flexibleSpace: Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40, right: 16),
+                child: IconButton(onPressed: () {}, icon: Icon(Icons.exit_to_app_rounded, size: 27)),
+              ),
+            ),
+          ),
+          SliverAppBar(
             pinned: true,
             floating: false,
             snap: false,
@@ -129,7 +141,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _SliverTeasGrid extends StatelessWidget {
-  const _SliverTeasGrid({super.key, required this.state});
+  const _SliverTeasGrid({required this.state});
   final HasDataState state;
 
   @override

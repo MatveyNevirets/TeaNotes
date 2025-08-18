@@ -200,7 +200,7 @@ class _BuildFieldsWidget extends StatelessWidget {
   final SpillModel currentSpill;
   final int currentIndex;
 
-  const _BuildFieldsWidget({super.key, required this.currentSpill, required this.currentIndex});
+  const _BuildFieldsWidget({required this.currentSpill, required this.currentIndex});
 
   Widget _buildTextField(
     BuildContext context, {
