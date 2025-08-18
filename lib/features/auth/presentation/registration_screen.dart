@@ -1,13 +1,12 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_snackbar.dart';
 import 'package:tea_list/core/widgets/loading_screen.dart';
 import 'package:tea_list/core/widgets/stylized_button.dart';
 import 'package:tea_list/core/widgets/stylized_text_field.dart';
-import 'package:tea_list/features/auth/presentation/registration/bloc/registration_bloc.dart';
+import 'package:tea_list/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:tea_list/internal/routes/application_routes.dart';
 
 class RegistrationScreen extends StatelessWidget {
@@ -15,24 +14,26 @@ class RegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+       SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: AppColors.applicationBackroundColor),
+    );
     return Scaffold(
       backgroundColor: AppColors.applicationBackroundColor,
       body: Padding(
         padding: const EdgeInsets.only(left: 32, right: 32, bottom: 32, top: 64),
-        child: BlocConsumer<RegistrationBloc, RegistrationState>(
+        child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is LetterHasBeenSended) {
+            if (state is AuthLetterSendedState) {
               showSnackBar(context, state.message);
-            } else if (state is SuccessRegistration) {
-              showSnackBar(context, state.message);
+            } else if (state is AuthenticatedState) {
+              showSnackBar(context, state.message!);
               goTo(context, "/main_page");
-            } else if (state is ErrorRegistration) {
-              log("Error into BLoC registration. Error: ${state.error} StackTrace: ${state.stack}");
-              showSnackBar(context, "Что-то пошло не так :(");
+            } else if (state is AuthErrorState) {
+              showSnackBar(context, state.message);
             }
           },
           builder: (context, state) {
-            if (state is RegistrationInitial) {
+            if (state is UnauthenticateState) {
               return RegistrationScreenWidget(message: state.message);
             }
             return LoadingScreen();
@@ -66,7 +67,7 @@ class RegistrationScreenWidget extends StatelessWidget {
   void tryToRegisterWithEmail(BuildContext context, String name, String email, String password, String verifyPassword) {
     if (password == verifyPassword) {
       // Send event to BLoC
-      context.read<RegistrationBloc>().add(TryRegisterEvent(name: name, email: email, password: password));
+      context.read<AuthBloc>().add(RegisterEvent(name: name, email: email, password: password));
     } else {
       showSnackBar(context, "Пароли должны совпадать");
     }

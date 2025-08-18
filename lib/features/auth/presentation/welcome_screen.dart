@@ -1,10 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_snackbar.dart';
 import 'package:tea_list/core/widgets/loading_screen.dart';
 import 'package:tea_list/core/widgets/stylized_button.dart';
-import 'package:tea_list/features/auth/presentation/welcome/bloc/welcome_bloc.dart';
+import 'package:tea_list/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:tea_list/internal/routes/application_routes.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -12,15 +15,19 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: AppColors.applicationBackroundColor),
+    );
     return Scaffold(
       backgroundColor: AppColors.applicationBackroundColor,
       body: Padding(
         padding: const EdgeInsets.only(left: 32, right: 32, bottom: 32, top: 64),
-        child: BlocConsumer<WelcomeBloc, WelcomeState>(
+        child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
-            if (state is WelcomeErrorState) {
+            log(state.toString());
+            if (state is AuthErrorState) {
               showSnackBar(context, state.message);
-            } else if (state is WelcomeSuccessSignInState) {
+            } else if (state is AuthenticatedState) {
               goTo(context, "/main_page");
               if (state.message != null) {
                 showSnackBar(context, state.message!);
@@ -28,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            if (state is WelcomeInitial) {
+            if (state is UnauthenticateState) {
               return WelcomeScreenWidget();
             }
             return LoadingScreen();
@@ -68,7 +75,7 @@ class WelcomeScreenWidget extends StatelessWidget {
         ),
         Expanded(flex: 2, child: SizedBox()),
         GestureDetector(
-          onTap: () => context.read<WelcomeBloc>().add(TryGoogleSignInEvent()),
+          onTap: () => context.read<AuthBloc>().add(GoogleSignInEvent()),
           child: SizedBox(
             height: MediaQuery.of(context).size.height / 18,
             child: Image.asset("assets/images/google_icon.png"),

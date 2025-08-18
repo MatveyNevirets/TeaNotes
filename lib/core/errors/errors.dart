@@ -47,3 +47,11 @@ class FetchFavoriteTeaException extends Failure {
 class FetchNotesException extends Failure {
   FetchNotesException(super.error, super.stack);
 }
+
+class FetchUserException extends Failure {
+  FetchUserException(super.error, super.stack);
+}
+
+class LogoutException extends Failure {
+  LogoutException(super.error, super.stack);
+}

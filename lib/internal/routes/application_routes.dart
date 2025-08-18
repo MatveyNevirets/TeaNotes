@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tea_list/core/models/ceremony_model.dart';
 import 'package:tea_list/core/models/tea_model.dart';
-import 'package:tea_list/features/auth/presentation/login/login_page.dart';
-import 'package:tea_list/features/auth/presentation/registration/registration_page.dart';
-import 'package:tea_list/features/auth/presentation/welcome/welcome_page.dart';
+import 'package:tea_list/features/auth/presentation/login_screen.dart';
+import 'package:tea_list/features/auth/presentation/registration_screen.dart';
+import 'package:tea_list/features/auth/presentation/welcome_screen.dart';
 import 'package:tea_list/features/details/presentation/details_page.dart';
 import 'package:tea_list/features/main_page/main_page.dart';
 import 'package:tea_list/features/notes_details/presentation/notes_details_screen.dart';
@@ -20,18 +20,18 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: "/",
-      builder: (context, state) => WelcomePage(),
+      builder: (context, state) => WelcomeScreen(),
       routes: [
         GoRoute(
           path: "/register",
           builder: (context, state) {
-            return RegistrationPage();
+            return RegistrationScreen();
           },
         ),
         GoRoute(
           path: "/login",
           builder: (context, state) {
-            return LoginPage();
+            return LoginScreen();
           },
         ),
       ],

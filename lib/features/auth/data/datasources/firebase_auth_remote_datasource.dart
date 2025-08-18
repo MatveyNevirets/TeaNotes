@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,7 +32,6 @@ class FirebaseAuthRemoteDatasource implements AuthRemoteDataSource {
       if (currentUser != null && !currentUser.emailVerified) {
         return Left(EmailLoginNotVerifedException(null, null));
       }
-
 
       // If well done we go HomeScreen and shows snackbar
       return Right("Приятных чаепитий!");
@@ -175,5 +173,35 @@ class FirebaseAuthRemoteDatasource implements AuthRemoteDataSource {
     // If all processes is OK
     // We shows snackbar and go HomeScreen
     return Right("Успешный вход!");
+  }
+
+  @override
+  Future<Either<Failure, User?>> fetchCurrentUser() async {
+    try {
+      // Here we just fetch and then returns user
+      final user = firebaseAuth.currentUser;
+      return Right(user);
+    } on Object catch (error, stack) {
+      return Left(FetchUserException(error, stack));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> logout() async {
+    try {
+      // Here we fetch user
+      final user = firebaseAuth.currentUser;
+
+      // Then check that user not null
+      if (user == null) return Left(LogoutException(null, null));
+
+      // If all good we sign out
+      await firebaseAuth.signOut();
+
+      // And returns success message
+      return Right("Успех!");
+    } on Object catch (error, stack) {
+      return Left(LogoutException(error, stack));
+    }
   }
 }

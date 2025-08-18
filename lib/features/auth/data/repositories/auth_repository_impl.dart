@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:dartz/dartz.dart';
@@ -37,6 +38,46 @@ class AuthRepositoryImpl implements AuthRepository {
       return result;
     } on Object catch (error, stack) {
       return Left(GoogleSignInException(error, stack));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity?>> fetchCurrentUser() async {
+    try {
+      final result = await authRemoteDataSource.fetchCurrentUser();
+      late final UserEntity userEntity;
+
+      result.fold(
+        (fail) {
+          return Left(fail);
+        },
+        (success) {
+          if (success == null) return Right(null);
+
+          userEntity = UserEntity(
+            name: success.displayName,
+            email: success.email!,
+            password: "",
+            teas: [],
+            ceremonies: [],
+          );
+
+          return Right(userEntity);
+        },
+      );
+
+      return Right(userEntity);
+    } on Object catch (error, stack) {
+      return Left(FetchUserException(error, stack));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> logout() async {
+    try {
+      return await authRemoteDataSource.logout();
+    } on Object catch (error, stack) {
+      return Left(LogoutException(error, stack));
     }
   }
 }

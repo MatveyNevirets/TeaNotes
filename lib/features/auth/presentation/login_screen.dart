@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
 import 'package:tea_list/core/widgets/base_snackbar.dart';
 import 'package:tea_list/core/widgets/loading_screen.dart';
 import 'package:tea_list/core/widgets/stylized_button.dart';
 import 'package:tea_list/core/widgets/stylized_text_field.dart';
-import 'package:tea_list/features/auth/presentation/login/bloc/login_bloc.dart';
+import 'package:tea_list/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:tea_list/internal/routes/application_routes.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -13,22 +14,25 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: AppColors.applicationBackroundColor),
+    );
     return Scaffold(
       backgroundColor: AppColors.applicationBackroundColor,
       body: Padding(
         padding: const EdgeInsets.only(left: 32, right: 32, bottom: 32, top: 64),
-        child: BlocConsumer<LoginBloc, LoginState>(
-          listener: (BuildContext context, LoginState state) {
-            if (state is LoginErrorState) {
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (BuildContext context, AuthState state) {
+            if (state is AuthErrorState) {
               showSnackBar(context, state.message);
             }
-            if (state is SuccessLoginState) {
-              showSnackBar(context, state.message);
+            if (state is AuthenticatedState) {
+              showSnackBar(context, state.message!);
               goTo(context, "/main_page");
             }
           },
           builder: (context, state) {
-            if (state is LoginInitial) {
+            if (state is UnauthenticateState) {
               return LoginScreenWidgets();
             }
             return LoadingScreen();
@@ -48,7 +52,7 @@ class LoginScreenWidgets extends StatelessWidget {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       showSnackBar(context, "Пожалуйста, заполните все необходимые поля");
     } else {
-      context.read<LoginBloc>().add(TryLoginEvent(email: emailController.text, password: passwordController.text));
+      context.read<AuthBloc>().add(LoginEvent(email: emailController.text, password: passwordController.text));
     }
   }
 

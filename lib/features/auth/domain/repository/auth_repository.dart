@@ -7,5 +7,7 @@ import 'package:tea_list/features/auth/domain/entity/user_entity.dart';
 abstract class AuthRepository {
   Future<Either<Failure, String>> registerWithEmail({required UserEntity user, required VoidCallback onSend});
   Future<Either<Failure, String>> loginWithEmail(UserEntity user);
+  Future<Either<Failure, UserEntity?>> fetchCurrentUser();
+  Future<Either<Failure, String>> logout();
   Future<Either<Failure, String>> signInWithGoogle();
 }
