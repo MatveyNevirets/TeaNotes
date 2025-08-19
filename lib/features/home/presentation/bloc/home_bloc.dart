@@ -18,7 +18,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _changeFavoriteTeaStatus(OnFavoriteChangedEvent event, Emitter<HomeState> emit) async {
     try {
-       await teaListRepository.changeTeaFavoriteStatus(event.isFavorite, event.changedTeaIndex);
+       await teaListRepository.changeTeaFavoriteStatus(event.isFavorite, event.tea);
     } on Object catch (error, stack) {
       throw Exception("Error in HomeBloc at method changeFavoriteTeaStatus: $error StackTrace: $stack");
     }

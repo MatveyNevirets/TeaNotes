@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 class TeaModel {
+  String id;
   String title;
   String description;
   String imagePath;
@@ -18,6 +19,7 @@ class TeaModel {
   bool isFavorite;
 
   TeaModel({
+    required this.id,
     required this.title,
     required this.description,
     required this.imagePath,
@@ -33,6 +35,7 @@ class TeaModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'title': title,
       'description': description,
       'imagePath': imagePath,
@@ -49,6 +52,7 @@ class TeaModel {
 
   factory TeaModel.fromMap(Map<String, dynamic> map) {
     return TeaModel(
+      id: map['id'] as String,
       title: map['title'] as String,
       description: map['description'] as String,
       imagePath: map['imagePath'] as String,

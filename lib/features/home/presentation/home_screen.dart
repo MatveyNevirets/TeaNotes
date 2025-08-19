@@ -193,7 +193,7 @@ class _SliverTeasGrid extends StatelessWidget {
           child: TeaCardToAdd(
             tea: state.teaList[index],
             onFavoriteChanged:
-                (bool isFavorite) => context.read<HomeBloc>().add(OnFavoriteChangedEvent(isFavorite, index)),
+                (bool isFavorite) => context.read<HomeBloc>().add(OnFavoriteChangedEvent(isFavorite, state.teaList[index])),
           ),
         );
       }, childCount: state.teaList.length),

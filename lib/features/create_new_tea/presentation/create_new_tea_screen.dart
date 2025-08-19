@@ -15,6 +15,7 @@ import 'package:tea_list/core/widgets/stylized_button.dart';
 import 'package:tea_list/core/widgets/stylized_text_field.dart';
 import 'package:tea_list/features/create_new_tea/presentation/bloc/create_tea_bloc.dart';
 import 'package:tea_list/features/home/presentation/bloc/home_bloc.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateNewTeaScreen extends StatefulWidget {
   CreateNewTeaScreen({super.key, required this.previousContext});
@@ -27,6 +28,7 @@ class CreateNewTeaScreen extends StatefulWidget {
 class _CreateNewTeaScreenState extends State<CreateNewTeaScreen> {
   String? currentTeaType;
   String pathToTeaImage = "assets/images/without_image.png";
+  final _uuid = Uuid();
 
   File? _imageFile;
 
@@ -68,6 +70,7 @@ class _CreateNewTeaScreenState extends State<CreateNewTeaScreen> {
           context.read<CreateTeaBloc>().add(
             AddTeaEvent(
               tea: TeaModel(
+                id: _uuid.v4(),
                 title: title,
                 description: description,
                 imagePath: imagePath,

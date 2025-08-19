@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:tea_list/core/consts/tea_models_list.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/features/home/data/datasources/local/home_local_datasource.dart';
@@ -69,10 +68,6 @@ class HomeSqfliteLocalDataSource implements HomeLocalDataSource {
         countOfSpills INTEGER,
         gatheringYear INTEGER
         )''');
-
-          for (TeaModel tea in teaModelsList) {
-            await database.insert("tea_table", tea.toMap());
-          }
         },
       );
 

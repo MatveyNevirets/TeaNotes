@@ -8,5 +8,5 @@ import 'package:tea_list/core/models/tea_model.dart';
 abstract class HomeRemoteDataSource {
   Future<Either<Failure, List<TeaModel>>> fetchTeaList(String? type, {String? teaName});
   Future<Either<Failure, String>> insertTea(TeaModel tea);
-  Future<Either<Failure, String>> changeFavoriteTeaStatus(bool isFavorite, int index);
+  Future<Either<Failure, String>> changeFavoriteTeaStatus(bool isFavorite, TeaModel tea);
 }

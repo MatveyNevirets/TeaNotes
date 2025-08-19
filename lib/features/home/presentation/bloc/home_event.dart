@@ -12,6 +12,6 @@ class FetchDataEvent extends HomeEvent {
 
 class OnFavoriteChangedEvent extends HomeEvent {
   final bool isFavorite;
-  final int changedTeaIndex;
-  OnFavoriteChangedEvent(this.isFavorite, this.changedTeaIndex) : super(0);
+  final TeaModel tea;
+  OnFavoriteChangedEvent(this.isFavorite, this.tea) : super(0);
 }

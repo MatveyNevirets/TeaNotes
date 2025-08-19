@@ -78,7 +78,7 @@ class HomeFirebaseRemoteDataSource implements HomeRemoteDataSource {
   }
 
   @override
-  Future<Either<Failure, String>> changeFavoriteTeaStatus(bool isFavorite, int index) async {
+  Future<Either<Failure, String>> changeFavoriteTeaStatus(bool isFavorite, TeaModel tea) async {
     try {
       // Here we fetch user's id
       final uid = auth.currentUser?.uid;
@@ -99,15 +99,12 @@ class HomeFirebaseRemoteDataSource implements HomeRemoteDataSource {
         // And fetch teas
         final teas = List<Map<String, dynamic>>.from(data['teas'] ?? []);
 
-        // Then we reverse index because in our UI
-        // We shows reversed tea list
-        // If we don't reverse index we will be
-        // Add to favorite last but not first tea
-        // (If we click to first element)
-        final reversedIndex = teas.length - 1 - index;
+        // Here we fetch current tea index from teas from database
+        // And check that one with current tea id
+        final teaIndex = teas.indexWhere((t) => (t['id'] ?? '') == tea.id);
 
         // And here we change isFavorite field
-        teas[reversedIndex]['isFavorite'] = isFavorite;
+        teas[teaIndex]['isFavorite'] = isFavorite;
 
         // Then we just update teas at firestore
         transaction.update(userData, {'teas': teas});

@@ -1,0 +1,28 @@
+{
+  "name": "teanotes",
+  "version": "1.0.0",
+  "description": "A new Flutter project.",
+  "main": "migrate-add-ids.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatveyNevirets/TeaNotes.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MatveyNevirets/TeaNotes/issues"
+  },
+  "homepage": "https://github.com/MatveyNevirets/TeaNotes#readme",
+  "dependencies": {
+    "firebase-admin": "^13.4.0",
+    "uuid": "^11.1.0"
+  }
+}
