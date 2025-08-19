@@ -17,13 +17,27 @@ import 'package:tea_list/features/home/presentation/create_tea_dialog_page.dart'
 import 'package:tea_list/features/home/widgets/tea_card_to_add.dart';
 import 'package:tea_list/internal/routes/application_routes.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final searchController = TextEditingController();
+
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    void onTabChanged(int index) {
+      setState(() {
+        currentIndex = index;
+        context.read<HomeBloc>().add(FetchDataEvent(index));
+      });
+    }
+
     void addNewTea() {
       showDialog(
         context: context,
@@ -139,9 +153,7 @@ class HomeScreen extends StatelessWidget {
                         left: 10,
                         right: 10,
                         height: 50,
-                        child: TeaTabWidget(
-                          onTabChanged: (index) => context.read<HomeBloc>().add(FetchDataEvent(index)),
-                        ),
+                        child: TeaTabWidget(currentIndex: currentIndex, onTabChanged: (index) => onTabChanged(index)),
                       ),
                     ],
                   ),

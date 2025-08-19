@@ -33,11 +33,8 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
   int currentIndex = 0;
 
   void changeTab(BuildContext context, int index) {
-    setState(() {
-      context.read<CeremonyBloc>().add(TabChangedEvent(index: index, spills: spills));
-      log("change index $index");
-      currentIndex = index;
-    });
+    currentIndex = index;
+    context.read<CeremonyBloc>().add(TabChangedEvent(index: currentIndex, spills: spills));
   }
 
   @override
@@ -46,7 +43,9 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
       listener: (context, state) {
         spills = state.spills;
         if (state is ChangedSpillState) {
-          currentIndex = state.index;
+          setState(() {
+            currentIndex = state.index;
+          });
         }
         if (state is SuccessFinishState) {
           context.go("/main_page");
@@ -123,6 +122,7 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                   child: BlocBuilder<CeremonyBloc, CeremonyState>(
                     builder: (context, state) {
                       return TeaTabWidget(
+                        currentIndex: currentIndex,
                         onTabChanged: (index) => changeTab(context, index),
                         children: List.generate(spills?.length ?? 0, (index) => "Пролив ${index + 1}"),
                       );
