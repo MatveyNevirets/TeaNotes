@@ -12,10 +12,6 @@ final class CeremonyInitial extends CeremonyState {
   const CeremonyInitial(super.spills);
 }
 
-class ClearTeaCeremonyState extends CeremonyState {
-  const ClearTeaCeremonyState(super.spills);
-}
-
 class StartCeremonyState extends CeremonyState {
   const StartCeremonyState(super.spills);
 }

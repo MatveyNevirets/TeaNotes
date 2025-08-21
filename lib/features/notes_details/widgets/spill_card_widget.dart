@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:tea_list/core/models/spill_model.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
+import 'package:tea_list/core/utils/utils.dart';
 
 class SpillCardWidget extends StatelessWidget {
   const SpillCardWidget({super.key, required this.spill, required this.index});
@@ -23,7 +24,7 @@ class SpillCardWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BuildHeaderWidget(index: index, separatorsWidth: separatorsWidth),
+          BuildHeaderWidget(index: index, separatorsWidth: separatorsWidth, spill: spill),
           BuildSmellPartWidget(spill: spill, separatorsWidth: separatorsWidth),
           BuildSpillPartWidget(spill: spill, separatorsWidth: separatorsWidth),
           BuildOtherPartWidget(spill: spill),
@@ -203,10 +204,11 @@ class BuildSmellPartWidget extends StatelessWidget {
 }
 
 class BuildHeaderWidget extends StatelessWidget {
-  const BuildHeaderWidget({super.key, required this.index, required this.separatorsWidth});
+  const BuildHeaderWidget({super.key, required this.index, required this.separatorsWidth, required this.spill});
 
   final int index;
   final double separatorsWidth;
+  final SpillModel spill;
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +224,10 @@ class BuildHeaderWidget extends StatelessWidget {
               decoration: BoxDecoration(color: Colors.black.withAlpha(190), borderRadius: BorderRadius.circular(8)),
             ),
             Expanded(child: SizedBox()),
-            Column(crossAxisAlignment: CrossAxisAlignment.center, children: [Text("Время:"), Text("00:00")]),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [Text("Время:"), Text(Utils.transformTime(spill.timeOfSpill))],
+            ),
             SizedBox(width: 16),
           ],
         ),

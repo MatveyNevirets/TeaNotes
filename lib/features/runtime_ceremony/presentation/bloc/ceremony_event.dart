@@ -10,7 +10,10 @@ class OnClearedTeaCeremonyEvent extends CeremonyEvent {}
 
 class StartSpillTimerEvent extends CeremonyEvent {}
 
-class StopSpillTimerEvent extends CeremonyEvent {}
+class StopSpillTimerEvent extends CeremonyEvent {
+  int seconds;
+  StopSpillTimerEvent({required this.seconds});
+}
 
 class SuccessFinishEvent extends CeremonyEvent {
   String? imagePath;
@@ -24,8 +27,10 @@ class TabChangedEvent extends CeremonyEvent {
 }
 
 class UpdateCeremonyFieldEvent extends CeremonyEvent {
-  String? smellOfDryLeaves, temperature, weightOfTea, other;
+  String? smellOfDryLeaves, temperature, weightOfTea, other, capacity, material;
   UpdateCeremonyFieldEvent({
+    required this.material,
+    required this.capacity,
     required this.smellOfDryLeaves,
     required this.other,
     required this.temperature,
@@ -35,7 +40,8 @@ class UpdateCeremonyFieldEvent extends CeremonyEvent {
 
 class UpdateSpillFieldEvent extends CeremonyEvent {
   int index;
+  int timeOfSpill;
   String fieldName;
   String value;
-  UpdateSpillFieldEvent({required this.index, required this.fieldName, required this.value});
+  UpdateSpillFieldEvent({required this.index, required this.timeOfSpill, required this.fieldName, required this.value});
 }

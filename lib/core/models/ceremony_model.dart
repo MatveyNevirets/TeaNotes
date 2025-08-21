@@ -4,10 +4,12 @@ import 'package:tea_list/core/models/spill_model.dart';
 class CeremonyModel {
   String? date;
   String? imagePath;
-  String? smellOfDryLeaves, temperature, weightOfTea, other;
+  String? smellOfDryLeaves, temperature, weightOfTea, other, capacity, material;
   List<SpillModel> spills;
   CeremonyModel({
+    required this.capacity,
     required this.spills,
+    required this.material,
     required this.date,
     required this.imagePath,
     required this.smellOfDryLeaves,
@@ -18,6 +20,7 @@ class CeremonyModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'capacity': capacity,
       'date': date,
       'other': other,
       'smellOfDryLeaves': smellOfDryLeaves,
@@ -30,6 +33,8 @@ class CeremonyModel {
 
   factory CeremonyModel.fromMap(Map<String, dynamic> map) {
     return CeremonyModel(
+      material: map['material'] != null ? map['material'] as String : null,
+      capacity: map['capacity'] != null ? map['capacity'] as String : null,
       other: map['other'] != null ? map['other'] as String : null,
       temperature: map['temperature'] != null ? map['temperature'] as String : null,
       weightOfTea: map['weightOfTea'] != null ? map['weightOfTea'] as String : null,

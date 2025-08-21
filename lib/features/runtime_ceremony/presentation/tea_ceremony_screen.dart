@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +6,7 @@ import 'package:tea_list/core/entities/spill_entity.dart';
 import 'package:tea_list/core/models/spill_model.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/core/styles/app_colors.dart';
+import 'package:tea_list/core/utils/utils.dart';
 import 'package:tea_list/core/widgets/are_you_sure_dialog.dart';
 import 'package:tea_list/core/widgets/base_snackbar.dart';
 import 'package:tea_list/core/widgets/stylized_loading_indicator.dart';
@@ -26,13 +25,16 @@ class TeaCeremonyScreen extends StatefulWidget {
 }
 
 class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
-  final _smellOfDryLeavesController = TextEditingController(),
-      _weightOfTeaPerGramController = TextEditingController(),
-      _temperatureController = TextEditingController(),
-      _otherController = TextEditingController();
   List<SpillEntity>? spills;
 
   int currentIndex = 0;
+
+  final _smellOfDryLeavesController = TextEditingController(),
+      _weightOfTeaPerGramController = TextEditingController(),
+      _temperatureController = TextEditingController(),
+      _otherController = TextEditingController(),
+      _capacityController = TextEditingController(),
+      _materialController = TextEditingController();
 
   void changeTab(BuildContext context, int index) {
     currentIndex = index;
@@ -56,21 +58,28 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder:
-                    (dialogContext) => AreYouSureDialog(
-                      title: "Вы уверены, что хотите завершить чайную церемонию?",
-                      onNot: () => Navigator.of(dialogContext).pop(),
-                      onYes: () {
-                        Navigator.of(dialogContext).pop();
-                        context.read<CeremonyBloc>().add(SuccessFinishEvent(imagePath: widget.tea.imagePath));
-                      },
-                    ),
-              );
-            },
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+
+            child: FloatingActionButton(
+              foregroundColor: Colors.white.withAlpha(150),
+              backgroundColor: AppColors.applicationBaseColor,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder:
+                      (dialogContext) => AreYouSureDialog(
+                        title: "Вы уверены, что хотите завершить чайную церемонию?",
+                        onNot: () => Navigator.of(dialogContext).pop(),
+                        onYes: () {
+                          Navigator.of(dialogContext).pop();
+                          context.read<CeremonyBloc>().add(SuccessFinishEvent(imagePath: widget.tea.imagePath));
+                        },
+                      ),
+                );
+              },
+              child: Icon(Icons.done_outline_rounded),
+            ),
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -85,8 +94,8 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                       );
                     } else if (state is SpillStartState) {
                       return _SpillTimerInProcessWidget(
-                        onClick: () {
-                          builderContext.read<CeremonyBloc>().add(StopSpillTimerEvent());
+                        onClick: (seconds) {
+                          builderContext.read<CeremonyBloc>().add(StopSpillTimerEvent(seconds: seconds));
                           changeTab(context, spills!.length);
                         },
                       );
@@ -126,12 +135,13 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                   ),
                 ),
                 _BuildStartCeremonyFields(
-                  runtimeType: runtimeType,
-                  smellOfDryLeavesController: _smellOfDryLeavesController,
-                  temperatureController: _temperatureController,
-                  weightOfTeaPerGramController: _weightOfTeaPerGramController,
-                  otherController: _otherController,
                   currentIndex: currentIndex,
+                  smellOfDryLeavesController: _smellOfDryLeavesController,
+                  weightOfTeaPerGramController: _weightOfTeaPerGramController,
+                  temperatureController: _temperatureController,
+                  otherController: _otherController,
+                  capacityController: _capacityController,
+                  materialController: _materialController,
                 ),
               ],
             ),
@@ -144,24 +154,22 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
 
 class _BuildStartCeremonyFields extends StatelessWidget {
   const _BuildStartCeremonyFields({
-    super.key,
-    required this.runtimeType,
-    required TextEditingController smellOfDryLeavesController,
-    required TextEditingController temperatureController,
-    required TextEditingController weightOfTeaPerGramController,
-    required TextEditingController otherController,
     required this.currentIndex,
-  }) : _smellOfDryLeavesController = smellOfDryLeavesController,
-       _temperatureController = temperatureController,
-       _weightOfTeaPerGramController = weightOfTeaPerGramController,
-       _otherController = otherController;
+    required this.smellOfDryLeavesController,
+    required this.weightOfTeaPerGramController,
+    required this.temperatureController,
+    required this.otherController,
+    required this.capacityController,
+    required this.materialController,
+  });
 
-  @override
-  final Type runtimeType;
-  final TextEditingController _smellOfDryLeavesController;
-  final TextEditingController _temperatureController;
-  final TextEditingController _weightOfTeaPerGramController;
-  final TextEditingController _otherController;
+  final TextEditingController smellOfDryLeavesController,
+      weightOfTeaPerGramController,
+      temperatureController,
+      otherController,
+      capacityController,
+      materialController;
+
   final int currentIndex;
 
   @override
@@ -177,7 +185,6 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: BlocBuilder<CeremonyBloc, CeremonyState>(
                   builder: (context, state) {
-                    log(state.runtimeType.toString());
                     if (state.spills.isEmpty) {
                       return Column(
                         children: [
@@ -191,10 +198,12 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             onChanged: (value) {
                               context.read<CeremonyBloc>().add(
                                 UpdateCeremonyFieldEvent(
-                                  smellOfDryLeaves: _smellOfDryLeavesController.text,
-                                  temperature: _temperatureController.text,
-                                  weightOfTea: _weightOfTeaPerGramController.text,
-                                  other: _otherController.text,
+                                  smellOfDryLeaves: smellOfDryLeavesController.text,
+                                  temperature: temperatureController.text,
+                                  weightOfTea: weightOfTeaPerGramController.text,
+                                  other: otherController.text,
+                                  material: materialController.text,
+                                  capacity: capacityController.text,
                                 ),
                               );
                             },
@@ -205,7 +214,7 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             lableText: "Аромат сухого листа",
 
                             controller:
-                                _smellOfDryLeavesController
+                                smellOfDryLeavesController
                                   ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
                           ),
                           SizedBox(height: 20),
@@ -213,10 +222,12 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             onChanged: (value) {
                               context.read<CeremonyBloc>().add(
                                 UpdateCeremonyFieldEvent(
-                                  smellOfDryLeaves: _smellOfDryLeavesController.text,
-                                  temperature: _temperatureController.text,
-                                  weightOfTea: _weightOfTeaPerGramController.text,
-                                  other: _otherController.text,
+                                  smellOfDryLeaves: smellOfDryLeavesController.text,
+                                  temperature: temperatureController.text,
+                                  weightOfTea: weightOfTeaPerGramController.text,
+                                  other: otherController.text,
+                                  material: materialController.text,
+                                  capacity: capacityController.text,
                                 ),
                               );
                             },
@@ -225,8 +236,9 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             fontSize: 21,
                             isOutline: true,
                             lableText: "Граммовка",
+
                             controller:
-                                _weightOfTeaPerGramController
+                                weightOfTeaPerGramController
                                   ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
                           ),
                           SizedBox(height: 20),
@@ -234,10 +246,12 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             onChanged: (value) {
                               context.read<CeremonyBloc>().add(
                                 UpdateCeremonyFieldEvent(
-                                  smellOfDryLeaves: _smellOfDryLeavesController.text,
-                                  temperature: _temperatureController.text,
-                                  weightOfTea: _weightOfTeaPerGramController.text,
-                                  other: _otherController.text,
+                                  smellOfDryLeaves: smellOfDryLeavesController.text,
+                                  temperature: temperatureController.text,
+                                  weightOfTea: weightOfTeaPerGramController.text,
+                                  other: otherController.text,
+                                  material: materialController.text,
+                                  capacity: capacityController.text,
                                 ),
                               );
                             },
@@ -245,9 +259,9 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             borderRadius: 16,
                             fontSize: 21,
                             isOutline: true,
-                            lableText: "Температура вода",
+                            lableText: "Объем посуды",
                             controller:
-                                _temperatureController
+                                capacityController
                                   ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
                           ),
                           SizedBox(height: 20),
@@ -255,10 +269,58 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             onChanged: (value) {
                               context.read<CeremonyBloc>().add(
                                 UpdateCeremonyFieldEvent(
-                                  smellOfDryLeaves: _smellOfDryLeavesController.text,
-                                  temperature: _temperatureController.text,
-                                  weightOfTea: _weightOfTeaPerGramController.text,
-                                  other: _otherController.text,
+                                  smellOfDryLeaves: smellOfDryLeavesController.text,
+                                  temperature: temperatureController.text,
+                                  weightOfTea: weightOfTeaPerGramController.text,
+                                  other: otherController.text,
+                                  material: materialController.text,
+                                  capacity: capacityController.text,
+                                ),
+                              );
+                            },
+                            borderWidth: 4,
+                            borderRadius: 16,
+                            fontSize: 21,
+                            isOutline: true,
+                            lableText: "Материал посуды",
+                            controller:
+                                materialController
+                                  ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
+                          ),
+                          SizedBox(height: 20),
+                          StylizedTextField(
+                            onChanged: (value) {
+                              context.read<CeremonyBloc>().add(
+                                UpdateCeremonyFieldEvent(
+                                  smellOfDryLeaves: smellOfDryLeavesController.text,
+                                  temperature: temperatureController.text,
+                                  weightOfTea: weightOfTeaPerGramController.text,
+                                  other: otherController.text,
+                                  material: materialController.text,
+                                  capacity: capacityController.text,
+                                ),
+                              );
+                            },
+                            borderWidth: 4,
+                            borderRadius: 16,
+                            fontSize: 21,
+                            isOutline: true,
+                            lableText: "Температура воды",
+                            controller:
+                                temperatureController
+                                  ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
+                          ),
+                          SizedBox(height: 20),
+                          StylizedTextField(
+                            onChanged: (value) {
+                              context.read<CeremonyBloc>().add(
+                                UpdateCeremonyFieldEvent(
+                                  smellOfDryLeaves: smellOfDryLeavesController.text,
+                                  temperature: temperatureController.text,
+                                  weightOfTea: weightOfTeaPerGramController.text,
+                                  other: otherController.text,
+                                  material: materialController.text,
+                                  capacity: capacityController.text,
                                 ),
                               );
                             },
@@ -268,7 +330,7 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             isOutline: true,
                             lableText: "Прочее",
                             controller:
-                                _otherController
+                                otherController
                                   ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
                           ),
                           SizedBox(height: 60),
@@ -312,7 +374,12 @@ class _BuildFieldsWidget extends StatelessWidget {
         ..selection = TextSelection.fromPosition(TextPosition(offset: (initialValue ?? "").length)),
       onChanged: (value) {
         context.read<CeremonyBloc>().add(
-          UpdateSpillFieldEvent(index: currentIndex, fieldName: fieldName, value: value),
+          UpdateSpillFieldEvent(
+            index: currentIndex,
+            fieldName: fieldName,
+            value: value,
+            timeOfSpill: currentSpill.timeOfSpill,
+          ),
         );
       },
     );
@@ -322,6 +389,14 @@ class _BuildFieldsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: 20),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Text(
+            "Время: ${Utils.transformTime(currentSpill.timeOfSpill)}",
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
         SizedBox(height: 20),
         Align(alignment: Alignment.topLeft, child: Text("Аромат", style: Theme.of(context).textTheme.bodyLarge)),
         SizedBox(height: 25),
@@ -377,24 +452,15 @@ class _BuildFieldsWidget extends StatelessWidget {
 }
 
 class _SpillTimerInProcessWidget extends StatelessWidget {
-  const _SpillTimerInProcessWidget({required this.onClick});
+  _SpillTimerInProcessWidget({required this.onClick});
 
-  final VoidCallback onClick;
-
-  String transformTime(int? seconds) {
-    if (seconds != null) {
-      final minutesTimer = ((seconds / 60) % 60).floor();
-      final secondsTimer = (seconds % 60);
-      return "${minutesTimer.toString().padLeft(2, '0')}:${secondsTimer.toString().padLeft(2, '0')}";
-    } else {
-      return "00:00";
-    }
-  }
+  Function(int) onClick;
 
   @override
   Widget build(BuildContext context) {
+    int seconds = 0;
     return GestureDetector(
-      onTap: () => onClick.call(),
+      onTap: () => onClick.call(seconds),
       child: Stack(
         children: [
           Positioned(
@@ -411,9 +477,10 @@ class _SpillTimerInProcessWidget extends StatelessWidget {
             child: StreamBuilder(
               stream: TimerTeaCeremony().tick(),
               builder: (context, asyncSnapshot) {
+                seconds = asyncSnapshot.data ?? 0;
                 return Text(
                   textAlign: TextAlign.center,
-                  transformTime(asyncSnapshot.data),
+                  Utils.transformTime(asyncSnapshot.data),
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white, fontSize: 52),
                 );
               },

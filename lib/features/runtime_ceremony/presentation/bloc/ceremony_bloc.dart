@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:tea_list/core/entities/spill_entity.dart';
 import 'package:tea_list/core/models/ceremony_model.dart';
 import 'package:tea_list/features/runtime_ceremony/domain/repository/runtime_ceremony_repository.dart';
+import 'package:tea_list/features/runtime_ceremony/domain/timer/timer_tea_ceremony.dart';
 
 part 'ceremony_event.dart';
 part 'ceremony_state.dart';
@@ -11,10 +12,11 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   List<SpillEntity> spills = [];
   RuntimeCeremonyRepository runtimeCeremonyRepository;
 
-  String? smellOfDryLeaves, temperature, weightOfTea, other;
+  final timer = TimerTeaCeremony();
+
+  String? smellOfDryLeaves, temperature, weightOfTea, other, capacity, material;
 
   CeremonyBloc({required this.runtimeCeremonyRepository}) : super(CeremonyInitial([])) {
-    on<OnClearedTeaCeremonyEvent>(_teaWasCleared);
     on<OnWarmedUpCeremonyEvent>(_dishesWasWarmed);
     on<StartSpillTimerEvent>(_startSpillTimer);
     on<StopSpillTimerEvent>(_stopSpillTimer);
@@ -28,6 +30,9 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
     smellOfDryLeaves = event.smellOfDryLeaves;
     weightOfTea = event.weightOfTea;
     temperature = event.temperature;
+    other = event.other;
+    capacity = event.capacity;
+    material = event.material;
   }
 
   Future<void> _onSuccessFinish(SuccessFinishEvent event, Emitter<CeremonyState> emit) async {
@@ -35,6 +40,8 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
     final dateString = "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}";
 
     final ceremony = CeremonyModel(
+      material: material,
+      capacity: capacity,
       spills: spills,
       date: dateString,
       imagePath: imagePath,
@@ -62,6 +69,7 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
 
     updatedSpills[event.index] = updatedSpills[event.index].copyWith(
       numberOfSpill: event.index,
+      timeOfSpill: event.timeOfSpill,
       smellUnderLid: event.fieldName == 'smellUnderLid' ? event.value : current.smellUnderLid,
       smellFromGaiwan: event.fieldName == 'smellFromGaiwan' ? event.value : current.smellFromGaiwan,
       smellFromEmptyBowl: event.fieldName == 'smellFromEmptyBowl' ? event.value : current.smellFromEmptyBowl,
@@ -81,10 +89,6 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   }
 
   void _dishesWasWarmed(OnWarmedUpCeremonyEvent event, Emitter<CeremonyState> emit) {
-    emit(ClearTeaCeremonyState(spills));
-  }
-
-  void _teaWasCleared(OnClearedTeaCeremonyEvent event, Emitter<CeremonyState> emit) {
     emit(StartCeremonyState(spills));
   }
 
@@ -93,7 +97,7 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   }
 
   void _stopSpillTimer(StopSpillTimerEvent event, Emitter<CeremonyState> emit) {
-    spills.add(SpillEntity());
+    spills.add(SpillEntity(timeOfSpill: event.seconds));
     emit(SpillStopState(spills));
   }
 }

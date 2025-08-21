@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class SpillModel {
   int? numberOfSpill;
+  int timeOfSpill;
   String? smellUnderLid;
   String? smellFromGaiwan;
   String? smellFromEmptyBowl;
@@ -12,6 +13,7 @@ class SpillModel {
   String? impressions;
   String? teaState;
   SpillModel({
+    required this.timeOfSpill,
     this.numberOfSpill,
     this.smellUnderLid,
     this.smellFromGaiwan,
@@ -25,6 +27,7 @@ class SpillModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'timeOfSpill': timeOfSpill,
       'numberOfSpill': numberOfSpill,
       'smellUnderLid': smellUnderLid,
       'smellFromGaiwan': smellFromGaiwan,
@@ -38,6 +41,7 @@ class SpillModel {
 
   factory SpillModel.fromMap(Map<String, dynamic> map) {
     return SpillModel(
+      timeOfSpill: map['timeOfSpill'] as int,
       numberOfSpill: map['numberOfSpill'] as int?,
       smellUnderLid: map['smellUnderLid'] as String?,
       smellFromGaiwan: map['smellFromGaiwan'] as String?,
@@ -51,6 +55,7 @@ class SpillModel {
 
   SpillModel copyWith({
     int? numberOfSpill,
+    int? timeOfSpill,
     String? smellUnderLid,
     String? smellFromGaiwan,
     String? smellFromEmptyBowl,
@@ -61,6 +66,7 @@ class SpillModel {
     String? teaState,
   }) {
     return SpillModel(
+      timeOfSpill: timeOfSpill ?? this.timeOfSpill,
       numberOfSpill: numberOfSpill ?? this.numberOfSpill,
       smellUnderLid: smellUnderLid ?? this.smellUnderLid,
       smellFromGaiwan: smellFromGaiwan ?? this.smellFromGaiwan,

@@ -2,6 +2,7 @@ import 'package:tea_list/core/models/spill_model.dart';
 
 class SpillEntity extends SpillModel {
   SpillEntity({
+    required super.timeOfSpill,
     super.numberOfSpill,
     super.smellUnderLid,
     super.smellFromGaiwan,
@@ -16,6 +17,7 @@ class SpillEntity extends SpillModel {
   @override
   SpillEntity copyWith({
     int? numberOfSpill,
+    int? timeOfSpill,
     String? smellUnderLid,
     String? smellFromGaiwan,
     String? smellFromEmptyBowl,
@@ -26,6 +28,7 @@ class SpillEntity extends SpillModel {
     String? teaState,
   }) {
     return SpillEntity(
+      timeOfSpill: timeOfSpill ?? this.timeOfSpill,
       numberOfSpill: numberOfSpill ?? this.numberOfSpill,
       smellUnderLid: smellUnderLid ?? smellUnderLid,
       smellFromGaiwan: smellFromGaiwan ?? smellFromGaiwan,
