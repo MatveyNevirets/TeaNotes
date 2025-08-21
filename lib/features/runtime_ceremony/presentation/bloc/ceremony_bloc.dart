@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:tea_list/core/entities/spill_entity.dart';
@@ -13,6 +11,8 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
   List<SpillEntity> spills = [];
   RuntimeCeremonyRepository runtimeCeremonyRepository;
 
+  String? smellOfDryLeaves, temperature, weightOfTea, other;
+
   CeremonyBloc({required this.runtimeCeremonyRepository}) : super(CeremonyInitial([])) {
     on<OnClearedTeaCeremonyEvent>(_teaWasCleared);
     on<OnWarmedUpCeremonyEvent>(_dishesWasWarmed);
@@ -21,19 +21,27 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
     on<TabChangedEvent>(_onTabChanged);
     on<UpdateSpillFieldEvent>(_onFieldUpdated);
     on<SuccessFinishEvent>(_onSuccessFinish);
+    on<UpdateCeremonyFieldEvent>(_onUpdateCeremonyField);
+  }
+
+  void _onUpdateCeremonyField(UpdateCeremonyFieldEvent event, Emitter<CeremonyState> emit) {
+    smellOfDryLeaves = event.smellOfDryLeaves;
+    weightOfTea = event.weightOfTea;
+    temperature = event.temperature;
   }
 
   Future<void> _onSuccessFinish(SuccessFinishEvent event, Emitter<CeremonyState> emit) async {
     final imagePath = event.imagePath;
     final dateString = "${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}";
 
-    log(event.smellOfDryLeaves.toString());
-
     final ceremony = CeremonyModel(
       spills: spills,
       date: dateString,
       imagePath: imagePath,
-      smellOfDryLeaves: event.smellOfDryLeaves,
+      smellOfDryLeaves: smellOfDryLeaves,
+      temperature: temperature,
+      other: other,
+      weightOfTea: weightOfTea,
     );
 
     final result = await runtimeCeremonyRepository.tryFinishCeremony(ceremony);

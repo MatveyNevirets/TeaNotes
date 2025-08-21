@@ -17,17 +17,19 @@ import 'package:tea_list/features/runtime_ceremony/domain/timer/timer_tea_ceremo
 import 'package:tea_list/features/runtime_ceremony/presentation/bloc/ceremony_bloc.dart';
 
 class TeaCeremonyScreen extends StatefulWidget {
-  TeaCeremonyScreen({super.key, required this.tea});
+  const TeaCeremonyScreen({super.key, required this.tea});
 
   final TeaModel tea;
-  String? smellOfDryLeavesText;
 
   @override
   State<TeaCeremonyScreen> createState() => _TeaCeremonyScreenState();
 }
 
 class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
-  final _smellOfDryLeavesController = TextEditingController();
+  final _smellOfDryLeavesController = TextEditingController(),
+      _weightOfTeaPerGramController = TextEditingController(),
+      _temperatureController = TextEditingController(),
+      _otherController = TextEditingController();
   List<SpillEntity>? spills;
 
   int currentIndex = 0;
@@ -63,14 +65,8 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                       title: "Вы уверены, что хотите завершить чайную церемонию?",
                       onNot: () => Navigator.of(dialogContext).pop(),
                       onYes: () {
-                        widget.smellOfDryLeavesText = _smellOfDryLeavesController.text;
                         Navigator.of(dialogContext).pop();
-                        context.read<CeremonyBloc>().add(
-                          SuccessFinishEvent(
-                            imagePath: widget.tea.imagePath,
-                            smellOfDryLeaves: widget.smellOfDryLeavesText,
-                          ),
-                        );
+                        context.read<CeremonyBloc>().add(SuccessFinishEvent(imagePath: widget.tea.imagePath));
                       },
                     ),
               );
@@ -129,69 +125,167 @@ class _TeaCeremonyScreenState extends State<TeaCeremonyScreen> {
                     },
                   ),
                 ),
-                Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        color: Colors.white.withAlpha(30),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: BlocBuilder<CeremonyBloc, CeremonyState>(
-                            builder: (context, state) {
-                              log(state.runtimeType.toString());
-                              if (state.spills.isEmpty) {
-                                return SizedBox(
-                                  height: MediaQuery.of(context).size.height / 2.65,
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: 20),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text("Аромат", style: Theme.of(context).textTheme.bodyLarge),
-                                        ),
-                                        SizedBox(height: 25),
-                                        StylizedTextField(
-                                          onChanged: (value) {
-                                            log(widget.smellOfDryLeavesText.toString());
-                                            widget.smellOfDryLeavesText = value;
-                                            log(widget.smellOfDryLeavesText.toString());
-                                          },
-                                          borderWidth: 4,
-                                          borderRadius: 16,
-                                          fontSize: 21,
-                                          isOutline: true,
-                                          lableText: "Сухого листа из Ча Хэ",
-                                          controller:
-                                              _smellOfDryLeavesController
-                                                ..selection = TextSelection.fromPosition(
-                                                  TextPosition(offset: ("").length),
-                                                ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              } else if (state is ChangedSpillState ||
-                                  state is SpillStopState ||
-                                  state is SpillStartState) {
-                                final currentSpill = state.spills[currentIndex];
-                                return _BuildFieldsWidget(currentSpill: currentSpill, currentIndex: currentIndex);
-                              }
-                              return Container();
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                _BuildStartCeremonyFields(
+                  runtimeType: runtimeType,
+                  smellOfDryLeavesController: _smellOfDryLeavesController,
+                  temperatureController: _temperatureController,
+                  weightOfTeaPerGramController: _weightOfTeaPerGramController,
+                  otherController: _otherController,
+                  currentIndex: currentIndex,
                 ),
               ],
             ),
           ),
         );
       },
+    );
+  }
+}
+
+class _BuildStartCeremonyFields extends StatelessWidget {
+  const _BuildStartCeremonyFields({
+    super.key,
+    required this.runtimeType,
+    required TextEditingController smellOfDryLeavesController,
+    required TextEditingController temperatureController,
+    required TextEditingController weightOfTeaPerGramController,
+    required TextEditingController otherController,
+    required this.currentIndex,
+  }) : _smellOfDryLeavesController = smellOfDryLeavesController,
+       _temperatureController = temperatureController,
+       _weightOfTeaPerGramController = weightOfTeaPerGramController,
+       _otherController = otherController;
+
+  @override
+  final Type runtimeType;
+  final TextEditingController _smellOfDryLeavesController;
+  final TextEditingController _temperatureController;
+  final TextEditingController _weightOfTeaPerGramController;
+  final TextEditingController _otherController;
+  final int currentIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              color: Colors.white.withAlpha(30),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: BlocBuilder<CeremonyBloc, CeremonyState>(
+                  builder: (context, state) {
+                    log(state.runtimeType.toString());
+                    if (state.spills.isEmpty) {
+                      return Column(
+                        children: [
+                          SizedBox(height: 20),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text("Подробнее перед началом", style: Theme.of(context).textTheme.bodyLarge),
+                          ),
+                          SizedBox(height: 25),
+                          StylizedTextField(
+                            onChanged: (value) {
+                              context.read<CeremonyBloc>().add(
+                                UpdateCeremonyFieldEvent(
+                                  smellOfDryLeaves: _smellOfDryLeavesController.text,
+                                  temperature: _temperatureController.text,
+                                  weightOfTea: _weightOfTeaPerGramController.text,
+                                  other: _otherController.text,
+                                ),
+                              );
+                            },
+                            borderWidth: 4,
+                            borderRadius: 16,
+                            fontSize: 21,
+                            isOutline: true,
+                            lableText: "Аромат сухого листа",
+
+                            controller:
+                                _smellOfDryLeavesController
+                                  ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
+                          ),
+                          SizedBox(height: 20),
+                          StylizedTextField(
+                            onChanged: (value) {
+                              context.read<CeremonyBloc>().add(
+                                UpdateCeremonyFieldEvent(
+                                  smellOfDryLeaves: _smellOfDryLeavesController.text,
+                                  temperature: _temperatureController.text,
+                                  weightOfTea: _weightOfTeaPerGramController.text,
+                                  other: _otherController.text,
+                                ),
+                              );
+                            },
+                            borderWidth: 4,
+                            borderRadius: 16,
+                            fontSize: 21,
+                            isOutline: true,
+                            lableText: "Граммовка",
+                            controller:
+                                _weightOfTeaPerGramController
+                                  ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
+                          ),
+                          SizedBox(height: 20),
+                          StylizedTextField(
+                            onChanged: (value) {
+                              context.read<CeremonyBloc>().add(
+                                UpdateCeremonyFieldEvent(
+                                  smellOfDryLeaves: _smellOfDryLeavesController.text,
+                                  temperature: _temperatureController.text,
+                                  weightOfTea: _weightOfTeaPerGramController.text,
+                                  other: _otherController.text,
+                                ),
+                              );
+                            },
+                            borderWidth: 4,
+                            borderRadius: 16,
+                            fontSize: 21,
+                            isOutline: true,
+                            lableText: "Температура вода",
+                            controller:
+                                _temperatureController
+                                  ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
+                          ),
+                          SizedBox(height: 20),
+                          StylizedTextField(
+                            onChanged: (value) {
+                              context.read<CeremonyBloc>().add(
+                                UpdateCeremonyFieldEvent(
+                                  smellOfDryLeaves: _smellOfDryLeavesController.text,
+                                  temperature: _temperatureController.text,
+                                  weightOfTea: _weightOfTeaPerGramController.text,
+                                  other: _otherController.text,
+                                ),
+                              );
+                            },
+                            borderWidth: 4,
+                            borderRadius: 16,
+                            fontSize: 21,
+                            isOutline: true,
+                            lableText: "Прочее",
+                            controller:
+                                _otherController
+                                  ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
+                          ),
+                          SizedBox(height: 60),
+                        ],
+                      );
+                    } else if (state is ChangedSpillState || state is SpillStopState || state is SpillStartState) {
+                      final currentSpill = state.spills[currentIndex];
+                      return _BuildFieldsWidget(currentSpill: currentSpill, currentIndex: currentIndex);
+                    }
+                    return Container();
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

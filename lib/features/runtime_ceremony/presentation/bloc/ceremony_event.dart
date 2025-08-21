@@ -14,14 +14,23 @@ class StopSpillTimerEvent extends CeremonyEvent {}
 
 class SuccessFinishEvent extends CeremonyEvent {
   String? imagePath;
-  String? smellOfDryLeaves;
-  SuccessFinishEvent({required this.imagePath, required smellOfDryLeaves});
+  SuccessFinishEvent({required this.imagePath});
 }
 
 class TabChangedEvent extends CeremonyEvent {
   int index;
   List<SpillEntity>? spills;
   TabChangedEvent({required this.index, this.spills});
+}
+
+class UpdateCeremonyFieldEvent extends CeremonyEvent {
+  String? smellOfDryLeaves, temperature, weightOfTea, other;
+  UpdateCeremonyFieldEvent({
+    required this.smellOfDryLeaves,
+    required this.other,
+    required this.temperature,
+    required this.weightOfTea,
+  });
 }
 
 class UpdateSpillFieldEvent extends CeremonyEvent {

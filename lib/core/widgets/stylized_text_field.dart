@@ -31,6 +31,7 @@ class StylizedTextField extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme.bodySmall;
 
     return TextField(
+      cursorColor: AppColors.application2BaseColor,
       onChanged: (value) => onChanged?.call(value),
       controller: controller,
       style: textStyle!.copyWith(color: textColor ?? textStyle.color, fontSize: fontSize ?? textStyle.fontSize),
