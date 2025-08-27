@@ -12,6 +12,7 @@ import 'package:sqflite_android/sqflite_android.dart';
 import 'package:google_sign_in_ios/google_sign_in_ios.dart';
 import 'package:image_picker_ios/image_picker_ios.dart';
 import 'package:sqflite_darwin/sqflite_darwin.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_selector_linux/file_selector_linux.dart';
 import 'package:image_picker_linux/image_picker_linux.dart';
@@ -85,6 +86,15 @@ class _PluginRegistrant {
       }
 
     } else if (Platform.isLinux) {
+      try {
+        ConnectivityPlusLinuxPlugin.registerWith();
+      } catch (err) {
+        print(
+          '`connectivity_plus` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
       try {
         DeviceInfoPlusLinuxPlugin.registerWith();
       } catch (err) {
