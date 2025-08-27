@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:dartz/dartz.dart';
@@ -50,8 +51,12 @@ class AuthRepositoryImpl implements AuthRepository {
         (fail) {
           return Left(fail);
         },
-        (success) {
-          if (success == null) return Right(null);
+        (success) async {
+          log(success.toString());
+          if (success == null) {
+            await authRemoteDataSource.logout();
+            return Left(FetchUserException);
+          }
 
           userEntity = UserEntity(
             name: success.displayName,

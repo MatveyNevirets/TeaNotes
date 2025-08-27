@@ -11,6 +11,16 @@ class TeaPostsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF2B1A0F)),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+
+        centerTitle: true,
+      ),
       body: BlocBuilder<TeaPostsBloc, TeaPostsState>(
         builder: (context, state) {
           if (state is FetchedTeaPosts) {

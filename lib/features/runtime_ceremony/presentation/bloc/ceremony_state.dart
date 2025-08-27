@@ -32,3 +32,7 @@ class SpillStartState extends CeremonyState {
 class SpillStopState extends CeremonyState {
   const SpillStopState(super.spills);
 }
+
+class ErrorFinishState extends CeremonyState {
+  const ErrorFinishState(super.spills);
+}

@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -234,8 +236,9 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             borderWidth: 4,
                             borderRadius: 16,
                             fontSize: 21,
+                            isNumberKeyboard: true,
                             isOutline: true,
-                            lableText: "Граммовка",
+                            lableText: "Вес чая (гр.)",
 
                             controller:
                                 weightOfTeaPerGramController
@@ -259,7 +262,8 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             borderRadius: 16,
                             fontSize: 21,
                             isOutline: true,
-                            lableText: "Объем посуды",
+                            lableText: "Объем посуды (мл.)",
+                            isNumberKeyboard: true,
                             controller:
                                 capacityController
                                   ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),
@@ -267,6 +271,7 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                           SizedBox(height: 20),
                           StylizedTextField(
                             onChanged: (value) {
+                              log(value);
                               context.read<CeremonyBloc>().add(
                                 UpdateCeremonyFieldEvent(
                                   smellOfDryLeaves: smellOfDryLeavesController.text,
@@ -305,7 +310,8 @@ class _BuildStartCeremonyFields extends StatelessWidget {
                             borderRadius: 16,
                             fontSize: 21,
                             isOutline: true,
-                            lableText: "Температура воды",
+                            isNumberKeyboard: true,
+                            lableText: "Температура воды (С)",
                             controller:
                                 temperatureController
                                   ..selection = TextSelection.fromPosition(TextPosition(offset: ("").length)),

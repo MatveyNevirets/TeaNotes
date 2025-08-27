@@ -128,6 +128,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             "Error at AuthBloc from auth repository. Type: ${fail.runtimeType} Error: ${fail.error} StackTrace: ${fail.stack}",
           );
           emit(AuthErrorState(message: "Что-то пошло не так"));
+          emit(UnauthenticateState());
         },
         (user) {
           log(user.toString());

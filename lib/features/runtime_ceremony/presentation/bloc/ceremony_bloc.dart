@@ -54,7 +54,7 @@ class CeremonyBloc extends Bloc<CeremonyEvent, CeremonyState> {
     final result = await runtimeCeremonyRepository.tryFinishCeremony(ceremony);
     result.fold(
       (fail) {
-        //    emit();
+        emit(ErrorFinishState(spills));
       },
       (success) {
         emit(SuccessFinishState(spills));
