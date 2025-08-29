@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:tea_list/core/consts/tea_types_list.dart';
+import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/core/models/tea_model.dart';
 import 'package:tea_list/features/home/domain/repository/tea_list_repository.dart';
 
@@ -18,7 +20,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _changeFavoriteTeaStatus(OnFavoriteChangedEvent event, Emitter<HomeState> emit) async {
     try {
-       await teaListRepository.changeTeaFavoriteStatus(event.isFavorite, event.tea);
+      await teaListRepository.changeTeaFavoriteStatus(event.isFavorite, event.tea);
     } on Object catch (error, stack) {
       throw Exception("Error in HomeBloc at method changeFavoriteTeaStatus: $error StackTrace: $stack");
     }
@@ -26,6 +28,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _fetchTeaList(HomeEvent event, Emitter<HomeState> emit) async {
     emit(LoadingState());
+
+    final Either<Failure, List<TeaModel>> result;
 
     try {
       // We create filter string that will be have type of the tea.
@@ -37,7 +41,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // We called fetchTeaList method and give teaFilter
       // When method was completed this one return
       // Two variations - success with teaList or failure
-      final result = await teaListRepository.fetchTeaList(teaFilter, teaName: event.searchByName);
+      result = await teaListRepository.fetchTeaList(teaFilter, teaName: event.searchByName);
 
       // Here we choose state which we'll show to the user
       result.fold(

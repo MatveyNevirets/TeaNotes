@@ -10,7 +10,6 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
-
   AuthBloc(this._authRepository) : super(UnauthenticateState()) {
     on<LoginEvent>(_tryLogin);
     on<RegisterEvent>(_tryRegister);

@@ -12,8 +12,6 @@ import 'package:tea_list/features/favorite/data/datasources/remote/favorite_data
 import 'package:tea_list/features/favorite/data/datasources/remote/remote_firebase_favorite_datasource.dart';
 import 'package:tea_list/features/favorite/data/repository/favorite_repository_impl.dart';
 import 'package:tea_list/features/favorite/domain/favorite_repository.dart';
-import 'package:tea_list/features/home/data/datasources/local/home_local_datasource.dart';
-import 'package:tea_list/features/home/data/datasources/local/home_sqlflite_local_datasource.dart';
 import 'package:tea_list/features/home/data/datasources/remote/home_firebase_remote_data_source.dart';
 import 'package:tea_list/features/home/data/datasources/remote/home_remote_datasource.dart';
 import 'package:tea_list/features/home/data/repository/tea_list_repository_impl.dart';
@@ -35,7 +33,6 @@ enum Depends {
   authRemoteDataSource,
   authRepository,
   homeRemoteDataSource,
-  homeLocalDataSource,
   teaListRepository,
   teaPostsRemoteDataSource,
   teaPostsRepository,
@@ -43,6 +40,7 @@ enum Depends {
   favoriteRepository,
   notesRemoteDatasource,
   notesRepository,
+  networkConnection,
 }
 
 typedef OnProccess = Function(String name, int time);
@@ -56,328 +54,326 @@ class AppDepends {
 
   Future<void> initDepends({required OnProccess onProccess, required OnError onError}) async {
     final getIt = GetIt.I;
-    final connection = await InternetConnection().hasInternetAccess;
-    if (connection) {
-      try {
-        final timer = Stopwatch();
-        timer.start();
 
-        // Here we register firebase auth and initialize Firebase application
-        getIt.registerLazySingleton(() {
-          late final FirebaseAuth firebaseAuth;
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          // Here we fetch firebase auth instance
+      // Here we register firebase auth and initialize Firebase application
+      getIt.registerLazySingleton(() {
+        late final FirebaseAuth firebaseAuth;
 
-          firebaseAuth = FirebaseAuth.instance;
+        // Here we fetch firebase auth instance
 
-          return firebaseAuth;
-        });
+        firebaseAuth = FirebaseAuth.instance;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[0].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[0].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        return firebaseAuth;
+      });
 
-        // Here we register application's database into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final FirebaseFirestore firebaseFirestore;
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[0].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[0].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          // Here we fetch firebase firestore instance
-          firebaseFirestore = FirebaseFirestore.instance;
+      // Here we register application's database into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final FirebaseFirestore firebaseFirestore;
 
-          return firebaseFirestore;
-        });
+        // Here we fetch firebase firestore instance
+        firebaseFirestore = FirebaseFirestore.instance;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[1].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[1].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        return firebaseFirestore;
+      });
 
-        // Here we register application's database into getIt with lazySingleton
-        getIt.registerSingletonAsync<GoogleSignIn>(() async {
-          late final GoogleSignIn googleSignIn;
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[1].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[1].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          // Here we fetch GoogleSignIn instance
-          googleSignIn = GoogleSignIn.instance;
-          // And then initialize this one from firebase's client id
-          await googleSignIn.initialize(serverClientId: dotenv.env['CLIENT_ID']);
+      // Here we register application's database into getIt with lazySingleton
+      getIt.registerSingletonAsync<GoogleSignIn>(() async {
+        late final GoogleSignIn googleSignIn;
 
-          return googleSignIn;
-        });
+        // Here we fetch GoogleSignIn instance
+        googleSignIn = GoogleSignIn.instance;
+        // And then initialize this one from firebase's client id
+        await googleSignIn.initialize(serverClientId: dotenv.env['CLIENT_ID']);
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[2].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[2].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        return googleSignIn;
+      });
 
-        getIt.registerSingletonAsync<AuthRemoteDataSource>(() async {
-          late final AuthRemoteDataSource authRemoteDataSource;
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[2].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[2].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          // And fetch our auth repository implementation
-          authRemoteDataSource = FirebaseAuthRemoteDatasource(
-            firebaseAuth: getIt<FirebaseAuth>(),
-            firebaseFirestore: getIt<FirebaseFirestore>(),
-            googleSignIn: getIt<GoogleSignIn>(),
-          );
+      getIt.registerSingletonAsync<AuthRemoteDataSource>(() async {
+        late final AuthRemoteDataSource authRemoteDataSource;
 
-          return authRemoteDataSource;
-        }, dependsOn: [GoogleSignIn]);
+        // And fetch our auth repository implementation
+        authRemoteDataSource = FirebaseAuthRemoteDatasource(
+          firebaseAuth: getIt<FirebaseAuth>(),
+          firebaseFirestore: getIt<FirebaseFirestore>(),
+          googleSignIn: getIt<GoogleSignIn>(),
+        );
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[3].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[3].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        return authRemoteDataSource;
+      }, dependsOn: [GoogleSignIn]);
 
-        // Here we register application's tea posts repository
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final HomeRemoteDataSource homeRemoteDataSource;
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[3].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[3].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          // Here we setup repository's implementation
-          homeRemoteDataSource = HomeFirebaseRemoteDataSource();
+      // Here we register application's tea posts repository
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final HomeRemoteDataSource homeRemoteDataSource;
 
-          return homeRemoteDataSource;
-        });
+        // Here we setup repository's implementation
+        homeRemoteDataSource = HomeFirebaseRemoteDataSource();
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[5].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[5].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        return homeRemoteDataSource;
+      });
 
-        // Here we register application's tea posts repository
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final HomeLocalDataSource homeLocalDataSource;
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[4].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[4].name, error, stack);
+    }
 
-          // Here we setup repository's implementation
-          homeLocalDataSource = HomeSqfliteLocalDataSource();
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          return homeLocalDataSource;
-        });
+      getIt.registerSingletonAsync<AuthRepository>(() async {
+        late final AuthRepository authRepository;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[6].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[6].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        // And fetch our auth repository implementation
 
-        // Here we register application's tea posts repository
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final TeaListRepository teaListRepository;
+        authRepository = AuthRepositoryImpl(authRemoteDataSource: getIt<AuthRemoteDataSource>());
 
-          // Here we setup repository's implementation
-          teaListRepository = TeaListRepositoryImpl(
-            remoteDataSource: getIt<HomeRemoteDataSource>(),
-            localDataSource: getIt<HomeLocalDataSource>(),
-            isConnection: true,
-          );
+        return authRepository;
+      }, dependsOn: [AuthRemoteDataSource]);
 
-          return teaListRepository;
-        });
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[5].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[5].name, error, stack);
+    }
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[7].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[7].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-        getIt.registerSingletonAsync<AuthRepository>(() async {
-          late final AuthRepository authRepository;
+      // Here we register application's tea posts remote datasource
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final PostsRemoteDatasource postsRemoteDataSource;
 
-          // And fetch our auth repository implementation
+        // Here we setup repository's implementation
+        postsRemoteDataSource = PostsFirebaseRemoteDatasource(firestore: getIt<FirebaseFirestore>());
 
-          authRepository = AuthRepositoryImpl(authRemoteDataSource: getIt<AuthRemoteDataSource>());
+        return postsRemoteDataSource;
+      });
 
-          return authRepository;
-        }, dependsOn: [AuthRemoteDataSource]);
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[6].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[6].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[4].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[4].name, error, stack);
-      }
+      // Here we register application's tea posts repository
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final TeaPostsRepository teaPostsRepository;
 
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        // Here we setup repository's implementation
+        teaPostsRepository = TeaPostsRepositoryImpl(postsRemoteDatasource: getIt<PostsRemoteDatasource>());
 
-        // Here we register application's tea posts remote datasource
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final PostsRemoteDatasource postsRemoteDataSource;
+        return teaPostsRepository;
+      });
 
-          // Here we setup repository's implementation
-          postsRemoteDataSource = PostsFirebaseRemoteDatasource(firestore: getIt<FirebaseFirestore>());
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[7].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[7].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          return postsRemoteDataSource;
-        });
+      // Here we register application's remote favorite datasource
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final RemoteFavoriteDataSource remoteFavoriteDataSource;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[8].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[8].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        // Here we setup datasource's implementation
+        remoteFavoriteDataSource = RemoteFirebaseFavoriteDatasource(
+          firebaseAuth: getIt<FirebaseAuth>(),
+          firestore: getIt<FirebaseFirestore>(),
+        );
 
-        // Here we register application's tea posts repository
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final TeaPostsRepository teaPostsRepository;
+        return remoteFavoriteDataSource;
+      });
 
-          // Here we setup repository's implementation
-          teaPostsRepository = TeaPostsRepositoryImpl(postsRemoteDatasource: getIt<PostsRemoteDatasource>());
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[8].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[8].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          return teaPostsRepository;
-        });
+      // Here we register application's favorite repository
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final FavoriteRepository favoriteRepository;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[9].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[9].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        // Here we setup repository's implementation
+        favoriteRepository = FavoriteRepositoryImpl(remoteDatasource: getIt<RemoteFavoriteDataSource>());
 
-        // Here we register application's remote favorite datasource
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final RemoteFavoriteDataSource remoteFavoriteDataSource;
+        return favoriteRepository;
+      });
 
-          // Here we setup datasource's implementation
-          remoteFavoriteDataSource = RemoteFirebaseFavoriteDatasource(
-            firebaseAuth: getIt<FirebaseAuth>(),
-            firestore: getIt<FirebaseFirestore>(),
-          );
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[9].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[9].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          return remoteFavoriteDataSource;
-        });
+      // Here we register application's notes remote datasource
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final NotesRemoteDatasource notesRemoteDatasource;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[10].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[10].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        // Here we setup datasource's implementation
+        notesRemoteDatasource = NotesFirebaseRemoteDatasource(
+          firestore: getIt<FirebaseFirestore>(),
+          firebaseAuth: getIt<FirebaseAuth>(),
+        );
 
-        // Here we register application's favorite repository
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final FavoriteRepository favoriteRepository;
+        return notesRemoteDatasource;
+      });
 
-          // Here we setup repository's implementation
-          favoriteRepository = FavoriteRepositoryImpl(remoteDatasource: getIt<RemoteFavoriteDataSource>());
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[10].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[10].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          return favoriteRepository;
-        });
+      // Here we register application's favorite repository
+      // Into getIt with lazySingleton
+      getIt.registerLazySingleton(() {
+        late final NotesRepository notesRepository;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[9].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[9].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        // Here we setup repository's implementation
+        notesRepository = NotesRepositoryImpl(notesRemoteDatasource: getIt<NotesRemoteDatasource>());
 
-        // Here we register application's notes remote datasource
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final NotesRemoteDatasource notesRemoteDatasource;
+        return notesRepository;
+      });
 
-          // Here we setup datasource's implementation
-          notesRemoteDatasource = NotesFirebaseRemoteDatasource(
-            firestore: getIt<FirebaseFirestore>(),
-            firebaseAuth: getIt<FirebaseAuth>(),
-          );
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[11].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[11].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          return notesRemoteDatasource;
-        });
+      // Here we register application's network connection checker
+      // Into getIt with lazySingleton
+      getIt.registerSingletonAsync(() async {
+        late final bool isConnection;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[10].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[10].name, error, stack);
-      }
-      try {
-        final timer = Stopwatch();
-        timer.start();
+        // Here we fetch network connection
+        isConnection = await InternetConnection().hasInternetAccess;
 
-        // Here we register application's favorite repository
-        // Into getIt with lazySingleton
-        getIt.registerLazySingleton(() {
-          late final NotesRepository notesRepository;
+        return isConnection;
+      });
 
-          // Here we setup repository's implementation
-          notesRepository = NotesRepositoryImpl(notesRemoteDatasource: getIt<NotesRemoteDatasource>());
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[12].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[12].name, error, stack);
+    }
+    try {
+      final timer = Stopwatch();
+      timer.start();
 
-          return notesRepository;
-        });
+      // Here we register application's tea posts repository
+      // Into getIt with lazySingleton
+      getIt.registerSingletonAsync(() async {
+        late final TeaListRepository teaListRepository;
 
-        timer.stop();
-        // Reports about successful registration of depend
-        onProccess.call(Depends.values[11].name, timer.elapsedMilliseconds);
-      } on Object catch (error, stack) {
-        // Reports about failure
-        onError.call(Depends.values[11].name, error, stack);
-      }
+        // Here we setup repository's implementation
+        teaListRepository = TeaListRepositoryImpl(
+          remoteDataSource: getIt<HomeRemoteDataSource>(),
+          isConnection: getIt<bool>(),
+        );
+
+        return teaListRepository;
+      }, dependsOn: [bool]);
+
+      timer.stop();
+      // Reports about successful registration of depend
+      onProccess.call(Depends.values[13].name, timer.elapsedMilliseconds);
+    } on Object catch (error, stack) {
+      // Reports about failure
+      onError.call(Depends.values[13].name, error, stack);
     }
   }
 }

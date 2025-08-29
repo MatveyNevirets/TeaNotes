@@ -1,15 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:tea_list/core/errors/errors.dart';
 import 'package:tea_list/core/models/tea_model.dart';
-import 'package:tea_list/features/home/data/datasources/local/home_local_datasource.dart';
 import 'package:tea_list/features/home/data/datasources/remote/home_remote_datasource.dart';
 import 'package:tea_list/features/home/domain/repository/tea_list_repository.dart';
 
 class TeaListRepositoryImpl implements TeaListRepository {
   final HomeRemoteDataSource remoteDataSource;
-  final HomeLocalDataSource localDataSource;
   final bool isConnection;
-  TeaListRepositoryImpl({required this.remoteDataSource, required this.localDataSource, required this.isConnection});
+  TeaListRepositoryImpl({required this.remoteDataSource, required this.isConnection});
 
   // Overrided method which call datasource and return TeaModel list or Failure
   @override
@@ -20,7 +18,9 @@ class TeaListRepositoryImpl implements TeaListRepository {
   @override
   Future<Either<Failure, String>> insertTea(TeaModel tea) async {
     try {
-      await remoteDataSource.insertTea(tea);
+      if (isConnection) {
+        await remoteDataSource.insertTea(tea);
+      }
       return Right("Успешно!");
     } on Object catch (error, stack) {
       return Left(DatabaseInsertException(error, stack));

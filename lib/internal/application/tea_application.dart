@@ -14,6 +14,7 @@ class TeaApplication extends StatelessWidget {
     final textColor = Colors.black.withAlpha(190);
 
     final authRepository = GetIt.I<AuthRepository>();
+
     return BlocProvider(
       create: (context) => AuthBloc(authRepository)..add(CheckUserLoginEvent()),
       child: MaterialApp.router(
